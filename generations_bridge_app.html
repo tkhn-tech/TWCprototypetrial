@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BridgeGenerations - Intergenerational Skill Exchange</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff8f1',
+                            100: '#feecdc',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                        },
+                        tealbrand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles & Accessibility Utility -->
+    <style>
+        .font-scale-normal { font-size: 100%; }
+        .font-scale-large { font-size: 115%; }
+        .font-scale-xlarge { font-size: 130%; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-glow {
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 font-scale-normal antialiased selection:bg-brand-500 selection:text-white" id="appBody">
+
+    <!-- Top Accessibility & User Switcher Bar -->
+    <div class="bg-slate-900 text-slate-200 text-xs sm:text-sm py-2 px-4 sm:px-8 flex flex-wrap justify-between items-center border-b border-slate-800 gap-2">
+        <div class="flex items-center space-x-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-brand-500/20 text-brand-400 border border-brand-500/30">
+                <i class="fa-solid fa-sparkles mr-1"></i> AI Powered Prototype
+            </span>
+            <span class="hidden md:inline text-slate-400">| Connecting Generations Through Skill Exchange</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <!-- Active Profile Switcher -->
+            <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+                <i class="fa-solid fa-user-circle text-amber-400 text-base"></i>
+                <span class="text-xs text-slate-300 font-medium">Viewing as:</span>
+                <select id="userSelector" onchange="switchUser(this.value)" class="bg-transparent text-white font-semibold text-xs focus:outline-none cursor-pointer">
+                    <option value="elena" class="bg-slate-800 text-white">Elena Rossi (Senior, 72 yrs)</option>
+                    <option value="alex" class="bg-slate-800 text-white">Alex Chen (Youth, 22 yrs)</option>
+                    <option value="arthur" class="bg-slate-800 text-white">Arthur Pendelton (Senior, 68 yrs)</option>
+                    <option value="maya" class="bg-slate-800 text-white">Maya Lin (Youth, 24 yrs)</option>
+                </select>
+            </div>
+
+            <!-- Accessibility Font Adjuster -->
+            <div class="flex items-center space-x-1 bg-slate-800 px-2 py-1 rounded-lg border border-slate-700" title="Text Accessibility Size">
+                <span class="text-xs text-slate-400 mr-1"><i class="fa-solid fa-text-height"></i></span>
+                <button onclick="setFontScale('normal')" class="px-1.5 py-0.5 text-xs font-bold rounded hover:bg-slate-700 text-slate-300 focus:ring-1 focus:ring-amber-400">A</button>
+                <button onclick="setFontScale('large')" class="px-1.5 py-0.5 text-sm font-bold rounded hover:bg-slate-700 text-slate-300 focus:ring-1 focus:ring-amber-400">A+</button>
+                <button onclick="setFontScale('xlarge')" class="px-1.5 py-0.5 text-base font-bold rounded hover:bg-slate-700 text-slate-300 focus:ring-1 focus:ring-amber-400">A++</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('matchmaker')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-400 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-hands-holding-circle"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-brand-700 to-tealbrand-700 bg-clip-text text-transparent">BridgeGenerations</span>
+                        <span class="block text-[10px] text-slate-500 font-semibold tracking-wider uppercase -mt-1">Skill & Wisdom Exchange</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1">
+                    <button id="nav-matchmaker" onclick="switchTab('matchmaker')" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-2 text-brand-600 bg-brand-50">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>AI Skill Matcher</span>
+                    </button>
+                    <button id="nav-schedule" onclick="switchTab('schedule')" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all flex items-center space-x-2">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>My Swaps & Schedule</span>
+                        <span id="pendingBadge" class="ml-1 px-2 py-0.5 text-xs bg-brand-500 text-white rounded-full font-bold">2</span>
+                    </button>
+                    <button id="nav-session" onclick="switchTab('session')" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Session Room & Co-Pilot</span>
+                    </button>
+                    <button id="nav-portfolio" onclick="switchTab('portfolio')" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-award"></i>
+                        <span>Digital Portfolio</span>
+                    </button>
+                </nav>
+
+                <!-- Profile Badge in Header -->
+                <div class="flex items-center space-x-3">
+                    <div class="text-right hidden sm:block">
+                        <div id="headerUserName" class="text-sm font-bold text-slate-800">Elena Rossi</div>
+                        <div id="headerUserRole" class="text-xs text-brand-600 font-medium">Senior Mentor • 72 yrs</div>
+                    </div>
+                    <img id="headerUserAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=120" alt="Avatar" class="w-10 h-10 rounded-full ring-2 ring-brand-500/30 object-cover shadow-sm">
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Row -->
+        <div class="md:hidden border-t border-slate-100 px-2 py-2 flex justify-around bg-slate-50 text-xs">
+            <button onclick="switchTab('matchmaker')" class="p-2 text-center text-brand-600 font-bold">
+                <i class="fa-solid fa-wand-magic-sparkles block text-base mb-0.5"></i> Match
+            </button>
+            <button onclick="switchTab('schedule')" class="p-2 text-center text-slate-600 font-medium">
+                <i class="fa-regular fa-calendar-check block text-base mb-0.5"></i> Schedule
+            </button>
+            <button onclick="switchTab('session')" class="p-2 text-center text-slate-600 font-medium">
+                <i class="fa-solid fa-video block text-base mb-0.5"></i> Session Room
+            </button>
+            <button onclick="switchTab('portfolio')" class="p-2 text-center text-slate-600 font-medium">
+                <i class="fa-solid fa-award block text-base mb-0.5"></i> Portfolio
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ======================================================== -->
+        <!-- TAB 1: AI SKILL MATCHMAKER                               -->
+        <!-- ======================================================== -->
+        <section id="tab-matchmaker" class="tab-content space-y-6">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-tealbrand-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-brand-300 mb-3 border border-white/10 backdrop-blur-sm">
+                        <i class="fa-solid fa-arrows-rotate mr-2 text-brand-400"></i> Generational Wisdom Exchange
+                    </span>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-3 leading-tight">
+                        Don't just connect generations — <br class="hidden sm:inline"><span class="bg-gradient-to-r from-brand-300 to-amber-300 bg-clip-text text-transparent">let them learn from each other.</span>
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base mb-6 leading-relaxed">
+                        Our AI engine pairs senior citizens and younger people to swap life skills. Cook heritage recipes, master smartphones, manage personal finances, or navigate social media — together.
+                    </p>
+                    
+                    <!-- Search & Filter Controls -->
+                    <div class="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/15 flex flex-wrap sm:flex-nowrap gap-3 items-center">
+                        <div class="flex-1 min-w-[200px] flex items-center bg-white rounded-xl px-3 py-2 text-slate-800">
+                            <i class="fa-solid fa-magnifying-glass text-slate-400 mr-2"></i>
+                            <input type="text" id="skillSearchInput" placeholder="Filter by skill e.g. Cooking, iPhone, Tax, Chess..." class="w-full bg-transparent focus:outline-none text-sm">
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <select id="generationFilter" class="bg-white text-slate-800 text-sm font-semibold rounded-xl px-3 py-2 focus:outline-none cursor-pointer">
+                                <option value="all">All Generations</option>
+                                <option value="youth">Youth seeking Senior mentors</option>
+                                <option value="senior">Seniors seeking Youth mentors</option>
+                            </select>
+                            <button onclick="runAIMatchmaking()" class="bg-gradient-to-r from-brand-500 to-amber-500 hover:from-brand-600 hover:to-amber-600 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 transition-all flex items-center space-x-2 whitespace-nowrap">
+                                <i class="fa-solid fa-sparkles"></i>
+                                <span>Run AI Match</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Compatibility Highlights Banner -->
+            <div id="aiMatchHighlightBox" class="hidden bg-emerald-50 border border-emerald-200 rounded-2xl p-4 transition-all">
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold text-emerald-900 flex items-center justify-between">
+                            <span>BridgeAI Strategic Match Analysis</span>
+                            <span class="text-xs bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">High Compatibility (98%)</span>
+                        </h4>
+                        <p id="aiMatchHighlightText" class="text-xs sm:text-sm text-emerald-800 mt-1 leading-relaxed">
+                            Analyzing mutual learning goals...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Grid Header -->
+            <div class="flex justify-between items-center pt-2">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Recommended Skill Swap Partners</h2>
+                    <p class="text-xs text-slate-500">Based on your skills to teach and learn preferences</p>
+                </div>
+                <div class="text-xs text-slate-500">
+                    Showing <span id="matchCountText" class="font-bold text-slate-800">4</span> potential matches
+                </div>
+            </div>
+
+            <!-- Matches Cards Grid -->
+            <div id="matchesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Dynamic cards populated by JS -->
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 2: SCHEDULED SWAPS & CALENDAR                        -->
+        <!-- ======================================================== -->
+        <section id="tab-schedule" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900">My Skill Exchange Schedule</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">Manage your upcoming intergenerational video sessions and community meetups</p>
+                </div>
+                <button onclick="openBookingModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Schedule New Swap</span>
+                </button>
+            </div>
+
+            <!-- Upcoming vs Completed Tabs -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Sessions List -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex space-x-2 border-b border-slate-200 pb-2">
+                        <button onclick="filterSchedule('upcoming')" id="schedTabUpcoming" class="px-4 py-1.5 rounded-lg font-bold text-sm bg-slate-900 text-white">
+                            Upcoming Sessions (<span id="upcomingCount">2</span>)
+                        </button>
+                        <button onclick="filterSchedule('completed')" id="schedTabCompleted" class="px-4 py-1.5 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-100">
+                            Completed Swaps (<span id="completedCount">3</span>)
+                        </button>
+                    </div>
+
+                    <div id="sessionsList" class="space-y-4">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Right: Calendar & Guidelines Sidebar -->
+                <div class="space-y-6">
+                    <!-- Mini Calendar Widget -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-900 text-sm">October 2026</h3>
+                            <div class="flex space-x-1 text-slate-400">
+                                <button class="p-1 hover:text-slate-800"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                                <button class="p-1 hover:text-slate-800"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1 text-center text-xs text-slate-400 font-medium mb-2">
+                            <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1 text-center text-xs">
+                            <span class="p-2 text-slate-300">28</span><span class="p-2 text-slate-300">29</span><span class="p-2 text-slate-300">30</span>
+                            <span class="p-2 font-medium">1</span><span class="p-2 font-medium">2</span><span class="p-2 font-medium">3</span><span class="p-2 font-medium">4</span>
+                            <span class="p-2 font-medium">5</span><span class="p-2 font-medium">6</span><span class="p-2 font-medium">7</span><span class="p-2 font-medium">8</span>
+                            <span class="p-2 font-medium">9</span><span class="p-2 font-medium">10</span><span class="p-2 font-medium">11</span>
+                            <span class="p-2 bg-brand-500 text-white font-bold rounded-lg shadow">12</span>
+                            <span class="p-2 font-medium">13</span>
+                            <span class="p-2 bg-tealbrand-100 text-tealbrand-800 font-bold rounded-lg">14</span>
+                            <span class="p-2 font-medium">15</span><span class="p-2 font-medium">16</span><span class="p-2 font-medium">17</span><span class="p-2 font-medium">18</span>
+                            <span class="p-2 font-medium">19</span><span class="p-2 font-medium">20</span>
+                            <span class="p-2 bg-amber-100 text-amber-800 font-bold rounded-lg">21</span>
+                            <span class="p-2 font-medium">22</span><span class="p-2 font-medium">23</span><span class="p-2 font-medium">24</span>
+                            <span class="p-2 font-medium">25</span><span class="p-2 font-medium">26</span><span class="p-2 font-medium">27</span><span class="p-2 font-medium">28</span>
+                        </div>
+                    </div>
+
+                    <!-- Safety & Tips Box -->
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-5 rounded-2xl">
+                        <div class="flex items-center space-x-2 text-amber-900 font-bold text-sm mb-2">
+                            <i class="fa-solid fa-shield-heart text-amber-600"></i>
+                            <span>Intergenerational Swap Tips</span>
+                        </div>
+                        <ul class="text-xs text-amber-900 space-y-2 list-disc list-inside leading-relaxed">
+                            <li>Be patient and encourage active listening.</li>
+                            <li>Use our **AI Co-Pilot** in the session room for instant icebreakers.</li>
+                            <li>In-person swaps can take place at local community libraries or cafes.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 3: SESSION ROOM & AI CO-PILOT                        -->
+        <!-- ======================================================== -->
+        <section id="tab-session" class="tab-content hidden space-y-6">
+            <!-- Session Room Banner Header -->
+            <div class="bg-slate-900 text-white rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <img id="sessionPartnerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" class="w-12 h-12 rounded-full object-cover ring-2 ring-emerald-400">
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-slate-900"></span>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h2 id="sessionPartnerName" class="text-lg font-bold">Alex Chen & Elena Rossi</h2>
+                            <span class="px-2 py-0.5 text-xs font-semibold bg-emerald-500/20 text-emerald-400 rounded-full border border-emerald-500/30">Active Live Room</span>
+                        </div>
+                        <p id="sessionTopicText" class="text-xs text-slate-300 mt-0.5">Topic: <span class="text-amber-300 font-medium">Smartphone Video Calling & Italian Pasta Techniques</span></p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 w-full sm:w-auto">
+                    <button onclick="triggerAICoPilotIcebreaker()" class="flex-1 sm:flex-none bg-gradient-to-r from-tealbrand-500 to-emerald-500 hover:from-tealbrand-600 hover:to-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition-all flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <span>AI Icebreaker</span>
+                    </button>
+                    <button onclick="completeCurrentSession()" class="flex-1 sm:flex-none bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition-all flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Finish & Issue Badge</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Split Interface: Video Simulation + AI Co-Pilot Chat -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left 2 Cols: Interactive Video Simulator -->
+                <div class="lg:col-span-2 space-y-4">
+                    <!-- Video Stage -->
+                    <div class="bg-slate-950 rounded-2xl overflow-hidden aspect-video relative shadow-2xl flex items-center justify-center border border-slate-800">
+                        <!-- Main Video View -->
+                        <img id="sessionMainVideo" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover opacity-90">
+                        
+                        <!-- Overlay Stage Details -->
+                        <div class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-xl flex items-center space-x-2 border border-white/10">
+                            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                            <span class="font-bold">LIVE: Exchange Session</span>
+                            <span class="text-slate-400">| 18:42</span>
+                        </div>
+
+                        <!-- Picture in Picture (Self View) -->
+                        <div class="absolute bottom-4 right-4 w-32 sm:w-44 aspect-video rounded-xl overflow-hidden border-2 border-white/20 shadow-xl bg-slate-800">
+                            <img id="sessionSelfVideo" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover">
+                            <span class="absolute bottom-1 left-1.5 text-[10px] text-white bg-slate-900/70 px-1 rounded">You</span>
+                        </div>
+
+                        <!-- Video Controls Bar -->
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center space-x-3 border border-white/10">
+                            <button onclick="toggleAudio()" id="btnAudio" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition">
+                                <i class="fa-solid fa-microphone text-sm"></i>
+                            </button>
+                            <button onclick="toggleVideo()" id="btnVideo" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition">
+                                <i class="fa-solid fa-video text-sm"></i>
+                            </button>
+                            <button onclick="toggleShare()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition" title="Share Screen">
+                                <i class="fa-solid fa-desktop text-sm"></i>
+                            </button>
+                            <button onclick="triggerLessonPlan()" class="px-3 h-10 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center space-x-1 transition" title="AI Lesson Card">
+                                <i class="fa-solid fa-book-open"></i>
+                                <span class="hidden sm:inline">AI Lesson Plan</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AI Generated Lesson Plan Card -->
+                    <div id="aiLessonCard" class="bg-gradient-to-r from-tealbrand-50 to-emerald-50 border border-tealbrand-200 rounded-2xl p-5 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center space-x-2 text-tealbrand-900 font-bold text-sm">
+                                <i class="fa-solid fa-graduation-cap text-tealbrand-600 text-base"></i>
+                                <span>Co-Pilot Lesson Strategy: <span id="lessonPlanTitle">iPhone Basics & Tiramisu Secrets</span></span>
+                            </div>
+                            <span class="text-[11px] bg-tealbrand-200 text-tealbrand-800 px-2 py-0.5 rounded font-bold">Auto-Guided</span>
+                        </div>
+                        <div id="lessonPlanBody" class="text-xs sm:text-sm text-slate-700 space-y-2">
+                            <p class="font-semibold text-slate-800">Part 1 (First 15 mins) - Youth Teaches Senior:</p>
+                            <ul class="list-disc list-inside pl-2 space-y-1 text-slate-600">
+                                <li>Show how to adjust screen font size for comfortable reading.</li>
+                                <li>Practice placing a video call to a family member on WhatsApp.</li>
+                            </ul>
+                            <p class="font-semibold text-slate-800 pt-1">Part 2 (Next 15 mins) - Senior Teaches Youth:</p>
+                            <ul class="list-disc list-inside pl-2 space-y-1 text-slate-600">
+                                <li>Elena demonstrates egg yolk whipping consistency for authentic tiramisu.</li>
+                                <li>Discussing exact coffee soaking time for ladyfinger biscuits.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right 1 Col: AI Bridge Facilitator Chat & Notes -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-[520px]">
+                    <!-- Chat Header -->
+                    <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-2xl">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-500 to-amber-400 flex items-center justify-center text-white text-xs font-bold">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-xs sm:text-sm">BridgeAI Facilitator</h3>
+                                <p class="text-[10px] text-emerald-600 font-medium">● Real-time assist active</p>
+                            </div>
+                        </div>
+                        <button onclick="clearChatLog()" class="text-slate-400 hover:text-slate-600 text-xs" title="Clear chat">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+                    </div>
+
+                    <!-- Chat Messages Log -->
+                    <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
+                        <!-- AI Greeting -->
+                        <div class="flex space-x-2">
+                            <div class="w-6 h-6 rounded-full bg-brand-500 text-white flex items-center justify-center text-[10px] flex-shrink-0">
+                                <i class="fa-solid fa-sparkles"></i>
+                            </div>
+                            <div class="bg-slate-100 rounded-2xl rounded-tl-none p-3 text-slate-700 leading-relaxed max-w-[85%]">
+                                <p class="font-bold text-slate-900 mb-1">BridgeAI:</p>
+                                Welcome Alex & Elena! I'm here to facilitate your skill swap. Ask me for icebreakers, tech explanations, or recipe measurements anytime!
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input Controls -->
+                    <div class="p-3 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
+                        <form onsubmit="handleUserChatMessage(event)" class="flex space-x-2">
+                            <input type="text" id="chatInput" placeholder="Ask AI co-pilot or send message..." class="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-500">
+                            <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-xl text-xs font-bold transition">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 4: DIGITAL SKILLS PORTFOLIO & PASSPORT              -->
+        <!-- ======================================================== -->
+        <section id="tab-portfolio" class="tab-content hidden space-y-6">
+            <!-- Header Summary Card -->
+            <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-tealbrand-950 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="flex items-center space-x-5">
+                    <div class="relative">
+                        <img id="portfolioAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200" class="w-20 h-20 rounded-2xl object-cover ring-4 ring-brand-500 shadow-xl">
+                        <span class="absolute -bottom-2 -right-2 bg-amber-400 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">Verified</span>
+                    </div>
+                    <div>
+                        <h2 id="portfolioUserName" class="text-2xl font-black">Elena Rossi</h2>
+                        <p id="portfolioBio" class="text-slate-300 text-xs sm:text-sm max-w-lg mt-1">"Retired language teacher who loves baking authentic Italian dishes and learning modern digital skills."</p>
+                        <div class="flex items-center space-x-3 mt-3 text-xs">
+                            <span class="bg-white/10 px-3 py-1 rounded-full text-brand-300 font-semibold border border-white/10"><i class="fa-solid fa-clock mr-1"></i> 14 Exchange Hours</span>
+                            <span class="bg-white/10 px-3 py-1 rounded-full text-tealbrand-300 font-semibold border border-white/10"><i class="fa-solid fa-handshake mr-1"></i> 6 Swaps Completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <button onclick="sharePortfolio()" class="bg-white/10 hover:bg-white/20 text-white font-bold text-xs px-4 py-3 rounded-xl border border-white/20 transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        <span>Share Verified Passport</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Intergenerational Impact Badges -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Column 1: Skills Taught (Wisdom Shared) -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm">
+                                <i class="fa-solid fa-chalkboard-user"></i>
+                            </div>
+                            <h3 class="font-extrabold text-slate-900 text-base">Skills Taught (Wisdom Shared)</h3>
+                        </div>
+                        <span class="text-xs text-amber-700 bg-amber-50 font-bold px-2 py-1 rounded-lg">Senior Mentor Level 3</span>
+                    </div>
+
+                    <div id="skillsTaughtList" class="space-y-3">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Column 2: Skills Learned (Modern Capabilities) -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-lg bg-tealbrand-100 text-tealbrand-700 flex items-center justify-center font-bold text-sm">
+                                <i class="fa-solid fa-seedling"></i>
+                            </div>
+                            <h3 class="font-extrabold text-slate-900 text-base">Skills Mastered (Digital Passport)</h3>
+                        </div>
+                        <span class="text-xs text-tealbrand-700 bg-tealbrand-50 font-bold px-2 py-1 rounded-lg">4 Badges Earned</span>
+                    </div>
+
+                    <div id="skillsLearnedList" class="space-y-3">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Generational Bridge Certificate Preview -->
+            <div class="bg-gradient-to-r from-amber-500/10 via-brand-500/10 to-tealbrand-500/10 p-6 rounded-2xl border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl shadow-lg">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-slate-900 text-sm sm:text-base">Generational Bridge Verified Certificate</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">Recognized for preserving traditional cultural heritage and bridging digital literacy divides.</p>
+                    </div>
+                </div>
+                <button onclick="downloadCertificate()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition whitespace-nowrap">
+                    <i class="fa-solid fa-download mr-1.5"></i> Export Credential
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-lg text-slate-900">Schedule Skill Exchange</h3>
+                <button onclick="closeBookingModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleBookSession(event)" class="space-y-3 text-xs sm:text-sm">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Select Learning Partner</label>
+                    <select id="modalPartnerSelect" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-brand-500">
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Exchange Format</label>
+                    <select id="modalFormatSelect" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-brand-500">
+                        <option value="video">Online Video Call (with AI Co-Pilot)</option>
+                        <option value="in-person">In-Person at Community Center</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Date</label>
+                        <input type="date" id="modalDateInput" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-slate-800 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Time</label>
+                        <input type="time" id="modalTimeInput" value="14:00" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-slate-800 focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Session Learning Goal</label>
+                    <input type="text" id="modalGoalInput" placeholder="e.g. Learn iPhone WhatsApp photo sharing for baking pie recipe" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div class="pt-2 flex space-x-3">
+                    <button type="button" onclick="closeBookingModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition">Cancel</button>
+                    <button type="submit" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl shadow transition">Confirm Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast Box -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center space-x-3 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toastText">Action completed successfully</span>
+    </div>
+
+    <!-- Application Logic Script -->
+    <script>
+        // Simulated User Profiles Data Store
+        const USERS = {
+            elena: {
+                id: 'elena',
+                name: 'Elena Rossi',
+                age: 72,
+                role: 'Senior Member',
+                generation: 'senior',
+                location: 'Downtown Community Center',
+                avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=300',
+                bio: 'Retired high school literature teacher. Passionate about authentic Italian cooking, traditional pasta crafting, and local history storytelling.',
+                teaches: ['Authentic Nonna Pasta', 'Tiramisu Baking', 'Italian Literature & History'],
+                wantsToLearn: ['iPhone Video Calling', 'Online Grocery Orders', 'Managing Cloud Photo Albums'],
+                hours: 14,
+                completedCount: 6,
+                skillsTaught: [
+                    { title: 'Handmade Tagliatelle & Sauce', rating: 5.0, date: 'Oct 02, 2026', student: 'Alex Chen' },
+                    { title: 'Tiramisu Heritage Recipe', rating: 4.9, date: 'Sep 24, 2026', student: 'Maya Lin' }
+                ],
+                skillsLearned: [
+                    { title: 'iPhone Basics & Large Text Setup', badge: 'Smartphone Navigator', date: 'Oct 05, 2026', mentor: 'Alex Chen' },
+                    { title: 'WhatsApp Group Video Calls', badge: 'Digital Connected Senior', date: 'Sep 20, 2026', mentor: 'Alex Chen' }
+                ]
+            },
+            alex: {
+                id: 'alex',
+                name: 'Alex Chen',
+                age: 22,
+                role: 'Youth Member',
+                generation: 'youth',
+                location: 'University District',
+                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
+                bio: 'Interaction Design senior student. Tech enthusiast, mobile app developer, and eager home cook looking for traditional recipes.',
+                teaches: ['Smartphone Navigation', 'Social Media Basics', 'Graphic & Photo Editing'],
+                wantsToLearn: ['Authentic Cooking & Baking', 'Gardening & Composting', 'Personal Financial Management'],
+                hours: 18,
+                completedCount: 8,
+                skillsTaught: [
+                    { title: 'Smartphone Setup & Cloud Backup', rating: 5.0, date: 'Oct 05, 2026', student: 'Elena Rossi' },
+                    { title: 'Smart Home Voice Control', rating: 4.8, date: 'Sep 28, 2026', student: 'Arthur Pendelton' }
+                ],
+                skillsLearned: [
+                    { title: 'Handmade Tagliatelle & Sauce', badge: 'Heritage Culinary Student', date: 'Oct 02, 2026', mentor: 'Elena Rossi' },
+                    { title: 'Personal Household Budgeting', badge: 'Financial Wisdom Novice', date: 'Sep 15, 2026', mentor: 'Arthur Pendelton' }
+                ]
+            },
+            arthur: {
+                id: 'arthur',
+                name: 'Arthur Pendelton',
+                age: 68,
+                role: 'Senior Member',
+                generation: 'senior',
+                location: 'Westside Library Guild',
+                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300',
+                bio: 'Retired CPA and avid chess strategist. Loves urban organic gardening and composting.',
+                teaches: ['Personal Financial Budgeting', 'Chess Strategy', 'Organic Tomato Gardening'],
+                wantsToLearn: ['Short-form Video Editing', 'Smart Home Setup', 'Podcast Apps'],
+                hours: 22,
+                completedCount: 9,
+                skillsTaught: [
+                    { title: 'Household Tax & Budget Planning', rating: 5.0, date: 'Sep 15, 2026', student: 'Alex Chen' }
+                ],
+                skillsLearned: [
+                    { title: 'Smart Home Voice Controls', badge: 'Smart Home Enthusiast', date: 'Sep 28, 2026', mentor: 'Alex Chen' }
+                ]
+            },
+            maya: {
+                id: 'maya',
+                name: 'Maya Lin',
+                age: 24,
+                role: 'Youth Member',
+                generation: 'youth',
+                location: 'East Side Arts Center',
+                avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=300',
+                bio: 'Digital marketing specialist and podcast host. Passionate about learning heritage crafts and sharing video skills.',
+                teaches: ['TikTok & Instagram Video Editing', 'Digital Marketing', 'Podcast Recording'],
+                wantsToLearn: ['Artisanal Baking', 'Chess Basics', 'Gardening & Plant Propagation'],
+                hours: 11,
+                completedCount: 5,
+                skillsTaught: [
+                    { title: 'Instagram Story Creation for Seniors', rating: 4.9, date: 'Oct 01, 2026', student: 'Arthur Pendelton' }
+                ],
+                skillsLearned: [
+                    { title: 'Artisanal Bread Baking Basics', badge: 'Artisanal Baker Student', date: 'Sep 24, 2026', mentor: 'Elena Rossi' }
+                ]
+            }
+        };
+
+        // Active State
+        let currentUser = USERS.elena;
+        let sessions = [
+            {
+                id: 's1',
+                partnerId: 'alex',
+                partnerName: 'Alex Chen',
+                partnerAvatar: USERS.alex.avatar,
+                partnerRole: 'Youth Member (22)',
+                topic: 'Smartphone Navigation & Tiramisu Baking Secrets',
+                date: '2026-10-14',
+                time: '14:30',
+                format: 'Online Video Call',
+                status: 'upcoming'
+            },
+            {
+                id: 's2',
+                partnerId: 'maya',
+                partnerName: 'Maya Lin',
+                partnerAvatar: USERS.maya.avatar,
+                partnerRole: 'Youth Member (24)',
+                topic: 'Italian Literature Discussion & Video Editing Basics',
+                date: '2026-10-21',
+                time: '11:00',
+                format: 'In-Person at Community Library',
+                status: 'upcoming'
+            },
+            {
+                id: 's3',
+                partnerId: 'alex',
+                partnerName: 'Alex Chen',
+                partnerAvatar: USERS.alex.avatar,
+                partnerRole: 'Youth Member (22)',
+                topic: 'Handmade Tagliatelle & Cloud Photos',
+                date: '2026-10-02',
+                time: '15:00',
+                format: 'Online Video Call',
+                status: 'completed'
+            }
+        ];
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderMatches();
+            renderSchedule();
+            renderPortfolio();
+        });
+
+        // Switch Active User View
+        function switchUser(userId) {
+            currentUser = USERS[userId];
+            document.getElementById('headerUserName').innerText = currentUser.name;
+            document.getElementById('headerUserRole').innerText = `${currentUser.role} • ${currentUser.age} yrs`;
+            document.getElementById('headerUserAvatar').src = currentUser.avatar;
+
+            // Refresh UI components for current user
+            renderMatches();
+            renderSchedule();
+            renderPortfolio();
+            showToast(`Switched view to ${currentUser.name}`);
+        }
+
+        // Accessibility Font Scaler
+        function setFontScale(scale) {
+            const body = document.getElementById('appBody');
+            body.classList.remove('font-scale-normal', 'font-scale-large', 'font-scale-xlarge');
+            if (scale === 'large') body.classList.add('font-scale-large');
+            else if (scale === 'xlarge') body.classList.add('font-scale-xlarge');
+            else body.classList.add('font-scale-normal');
+
+            showToast(`Text size updated to ${scale}`);
+        }
+
+        // Switch Main Navigation Tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-600', 'bg-brand-50');
+                btn.classList.add('text-slate-600');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-brand-600', 'bg-brand-50');
+                activeBtn.classList.remove('text-slate-600');
+            }
+        }
+
+        // Render Matches Grid
+        function renderMatches() {
+            const container = document.getElementById('matchesGrid');
+            container.innerHTML = '';
+
+            const searchVal = document.getElementById('skillSearchInput')?.value.toLowerCase() || '';
+            const genFilter = document.getElementById('generationFilter')?.value || 'all';
+
+            const potentialPartners = Object.values(USERS).filter(u => u.id !== currentUser.id);
+
+            let visibleCount = 0;
+
+            potentialPartners.forEach(partner => {
+                // Filter checks
+                if (genFilter === 'youth' && partner.generation !== 'youth') return;
+                if (genFilter === 'senior' && partner.generation !== 'senior') return;
+
+                const matchSkills = partner.teaches.concat(partner.wantsToLearn).join(' ').toLowerCase();
+                if (searchVal && !matchSkills.includes(searchVal)) return;
+
+                visibleCount++;
+
+                // Build Card
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-3">
+                                <img src="${partner.avatar}" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-slate-100 shadow">
+                                <div>
+                                    <h3 class="font-extrabold text-slate-900 text-base">${partner.name}</h3>
+                                    <p class="text-xs text-slate-500 font-medium">${partner.role} • ${partner.age} yrs • ${partner.location}</p>
+                                    <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded-full">
+                                        <i class="fa-solid fa-sparkles mr-1"></i> 96% AI Match Compatibility
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">${partner.bio}</p>
+
+                        <div class="mt-4 space-y-2">
+                            <div>
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-amber-700 block mb-1"><i class="fa-solid fa-graduation-cap"></i> Can Teach You:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${partner.teaches.map(t => `<span class="px-2 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-lg text-xs font-semibold">${t}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="pt-1">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-tealbrand-700 block mb-1"><i class="fa-solid fa-hand-holding-heart"></i> Wants to Learn:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${partner.wantsToLearn.map(w => `<span class="px-2 py-1 bg-tealbrand-50 text-tealbrand-900 border border-tealbrand-200 rounded-lg text-xs font-semibold">${w}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="requestSwapWith('${partner.id}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center space-x-2">
+                            <i class="fa-regular fa-calendar-plus"></i>
+                            <span>Request Skill Exchange</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('matchCountText').innerText = visibleCount;
+        }
+
+        // AI Match Analysis via Gemini API
+        async function runAIMatchmaking() {
+            const highlightBox = document.getElementById('aiMatchHighlightBox');
+            const highlightText = document.getElementById('aiMatchHighlightText');
+
+            highlightBox.classList.remove('hidden');
+            highlightText.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Analyzing generational knowledge overlaps via Gemini AI...`;
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const userSummary = `Current User: ${currentUser.name} (${currentUser.age} yrs, ${currentUser.role}). Teaches: ${currentUser.teaches.join(', ')}. Wants to learn: ${currentUser.wantsToLearn.join(', ')}.`;
+
+            const prompt = `Act as an intergenerational matchmaker AI ("BridgeAI"). Analyze this user profile and explain why pairing seniors and youth creates high mutual empathy and skill transfer: ${userSummary}. Keep explanation concise (2 short sentences).`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (aiText) {
+                    highlightText.innerHTML = `<strong>BridgeAI Insight:</strong> ${aiText}`;
+                } else {
+                    highlightText.innerHTML = `<strong>BridgeAI Insight:</strong> Excellent fit! Swapping digital smartphone confidence for heritage culinary mastery creates an ideal balance of youth tech literacy and senior lifelong wisdom.`;
+                }
+            } catch (err) {
+                highlightText.innerHTML = `<strong>BridgeAI Insight:</strong> Excellent fit! Swapping digital smartphone confidence for heritage culinary mastery creates an ideal balance of youth tech literacy and senior lifelong wisdom.`;
+            }
+
+            renderMatches();
+        }
+
+        function openBookingModal(partnerId) {
+            const modal = document.getElementById('bookingModal');
+            const select = document.getElementById('modalPartnerSelect');
+            select.innerHTML = '';
+
+            Object.values(USERS).filter(u => u.id !== currentUser.id).forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.innerText = `${p.name} (${p.role})`;
+                if (p.id === partnerId) opt.selected = true;
+                select.appendChild(opt);
+            });
+
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('modalDateInput').value = tomorrow.toISOString().split('T')[0];
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+        }
+
+        function requestSwapWith(partnerId) {
+            openBookingModal(partnerId);
+        }
+
+        function handleBookSession(event) {
+            event.preventDefault();
+            const partnerId = document.getElementById('modalPartnerSelect').value;
+            const partner = USERS[partnerId];
+            const format = document.getElementById('modalFormatSelect').value === 'video' ? 'Online Video Call' : 'In-Person';
+            const date = document.getElementById('modalDateInput').value;
+            const time = document.getElementById('modalTimeInput').value;
+            const goal = document.getElementById('modalGoalInput').value;
+
+            const newSession = {
+                id: 's_' + Date.now(),
+                partnerId: partner.id,
+                partnerName: partner.name,
+                partnerAvatar: partner.avatar,
+                partnerRole: `${partner.role} (${partner.age})`,
+                topic: goal,
+                date: date,
+                time: time,
+                format: format,
+                status: 'upcoming'
+            };
+
+            sessions.unshift(newSession);
+            closeBookingModal();
+            renderSchedule();
+            showToast(`Exchange scheduled with ${partner.name}!`);
+            switchTab('schedule');
+        }
+
+        function renderSchedule(filter = 'upcoming') {
+            const container = document.getElementById('sessionsList');
+            container.innerHTML = '';
+
+            const filtered = sessions.filter(s => s.status === filter);
+
+            document.getElementById('upcomingCount').innerText = sessions.filter(s => s.status === 'upcoming').length;
+            document.getElementById('completedCount').innerText = sessions.filter(s => s.status === 'completed').length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500">
+                        <i class="fa-regular fa-calendar-xmark text-3xl mb-2 text-slate-300"></i>
+                        <p class="font-bold text-slate-700">No ${filter} sessions found</p>
+                        <p class="text-xs">Schedule a swap with a mentor or partner!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4";
+                card.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <img src="${s.partnerAvatar}" class="w-12 h-12 rounded-2xl object-cover ring-2 ring-slate-100">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-extrabold text-slate-900 text-base">${s.partnerName}</h4>
+                                <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 font-semibold text-slate-600">${s.partnerRole}</span>
+                            </div>
+                            <p class="text-xs text-slate-600 font-medium mt-0.5"><i class="fa-solid fa-bullseye text-brand-500 mr-1"></i> ${s.topic}</p>
+                            <div class="flex items-center space-x-3 text-xs text-slate-400 mt-2">
+                                <span><i class="fa-regular fa-calendar mr-1"></i> ${s.date} at ${s.time}</span>
+                                <span><i class="fa-solid fa-location-dot mr-1"></i> ${s.format}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 w-full sm:w-auto">
+                        ${s.status === 'upcoming' ? `
+                            <button onclick="enterSessionRoom('${s.id}')" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-video"></i>
+                                <span>Enter Room</span>
+                            </button>
+                        ` : `
+                            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+                                <i class="fa-solid fa-circle-check mr-1"></i> Verified Badge Issued
+                            </span>
+                        `}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterSchedule(tab) {
+            document.getElementById('schedTabUpcoming').className = tab === 'upcoming' ? 'px-4 py-1.5 rounded-lg font-bold text-sm bg-slate-900 text-white' : 'px-4 py-1.5 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-100';
+            document.getElementById('schedTabCompleted').className = tab === 'completed' ? 'px-4 py-1.5 rounded-lg font-bold text-sm bg-slate-900 text-white' : 'px-4 py-1.5 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-100';
+            renderSchedule(tab);
+        }
+
+        let activeSessionId = 's1';
+
+        function enterSessionRoom(sessionId) {
+            activeSessionId = sessionId;
+            const sess = sessions.find(s => s.id === sessionId);
+            if (sess) {
+                document.getElementById('sessionPartnerName').innerText = `${currentUser.name} & ${sess.partnerName}`;
+                document.getElementById('sessionPartnerAvatar').src = sess.partnerAvatar;
+                document.getElementById('sessionTopicText').innerHTML = `Topic: <span class="text-amber-300 font-medium">${sess.topic}</span>`;
+            }
+            switchTab('session');
+            showToast('Entered AI Facilitated Live Room');
+        }
+
+        // AI Co-Pilot Icebreaker Generator
+        async function triggerAICoPilotIcebreaker() {
+            appendChatMessage('BridgeAI', '<i>Generating personalized cross-generational icebreakers...</i>', true);
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const prompt = `Generate 2 friendly, warm icebreaker questions for a 72-year-old senior (Elena) and a 22-year-old student (Alex) who are doing a skill exchange (cooking & tech). Make them fun and encouraging!`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (text) {
+                    appendChatMessage('BridgeAI Co-Pilot', text);
+                } else {
+                    appendChatMessage('BridgeAI Co-Pilot', '1. What is your favorite family food tradition?\n2. What was your very first phone or gadget?');
+                }
+            } catch (e) {
+                appendChatMessage('BridgeAI Co-Pilot', '1. What is your favorite family food tradition?\n2. What was your very first phone or gadget?');
+            }
+        }
+
+        // Generate Structured Lesson Strategy
+        function triggerLessonPlan() {
+            const card = document.getElementById('aiLessonCard');
+            card.classList.toggle('hidden');
+            showToast('Toggled AI Co-Pilot Lesson Plan');
+        }
+
+        // Chat Message Log Helper
+        function appendChatMessage(sender, text, isHtml = false) {
+            const box = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "flex space-x-2";
+            msgDiv.innerHTML = `
+                <div class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] flex-shrink-0 font-bold">
+                    ${sender.charAt(0)}
+                </div>
+                <div class="bg-slate-100 rounded-2xl p-3 text-slate-800 leading-relaxed max-w-[85%]">
+                    <p class="font-bold text-slate-900 mb-0.5 text-[11px]">${sender}:</p>
+                    <div>${isHtml ? text : text.replace(/\n/g, '<br>')}</div>
+                </div>
+            `;
+            box.appendChild(msgDiv);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function handleUserChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const val = input.value.trim();
+            if (!val) return;
+
+            appendChatMessage(currentUser.name, val);
+            input.value = '';
+
+            // Simulated AI Auto Response
+            setTimeout(() => {
+                appendChatMessage('BridgeAI', `Great question! When teaching tech to seniors or cooking to youth, step-by-step patience works wonders!`);
+            }, 800);
+        }
+
+        function completeCurrentSession() {
+            const sess = sessions.find(s => s.id === activeSessionId) || sessions[0];
+            sess.status = 'completed';
+
+            // Award Badge to user portfolio
+            currentUser.skillsLearned.unshift({
+                title: sess.topic,
+                badge: 'Verified Intergenerational Exchange',
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                mentor: sess.partnerName
+            });
+
+            currentUser.hours += 2;
+            currentUser.completedCount += 1;
+
+            renderSchedule();
+            renderPortfolio();
+            showToast('Session Completed! Digital Badge awarded to Portfolio 🎉');
+            switchTab('portfolio');
+        }
+
+        function renderPortfolio() {
+            document.getElementById('portfolioUserName').innerText = currentUser.name;
+            document.getElementById('portfolioBio').innerText = `"${currentUser.bio}"`;
+            document.getElementById('portfolioAvatar').src = currentUser.avatar;
+
+            // Render Skills Taught
+            const taughtList = document.getElementById('skillsTaughtList');
+            taughtList.innerHTML = '';
+            currentUser.skillsTaught.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "p-3 bg-amber-50/60 rounded-xl border border-amber-100 flex justify-between items-center";
+                div.innerHTML = `
+                    <div>
+                        <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm">${item.title}</h4>
+                        <p class="text-[11px] text-slate-500">Taught to: <span class="font-semibold text-slate-700">${item.student}</span> • ${item.date}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-amber-700"><i class="fa-solid fa-star text-amber-500"></i> ${item.rating}</span>
+                    </div>
+                `;
+                taughtList.appendChild(div);
+            });
+
+            // Render Skills Learned (Badges)
+            const learnedList = document.getElementById('skillsLearnedList');
+            learnedList.innerHTML = '';
+            currentUser.skillsLearned.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "p-3 bg-tealbrand-50/60 rounded-xl border border-tealbrand-100 flex justify-between items-center";
+                div.innerHTML = `
+                    <div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="px-2 py-0.5 text-[10px] font-extrabold bg-tealbrand-600 text-white rounded">BADGE</span>
+                            <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm">${item.badge}</h4>
+                        </div>
+                        <p class="text-[11px] text-slate-600 mt-1">${item.title}</p>
+                        <p class="text-[10px] text-slate-400">Mentored by: ${item.mentor} • ${item.date}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-tealbrand-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                `;
+                learnedList.appendChild(div);
+            });
+        }
+
+        // Helper Toast Notification
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastText').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function sharePortfolio() {
+            showToast('Portfolio link copied to clipboard!');
+        }
+
+        function downloadCertificate() {
+            showToast('Exporting Verified Intergenerational Credentials PDF...');
+        }
+
+        function toggleAudio() {
+            const btn = document.getElementById('btnAudio');
+            btn.classList.toggle('bg-red-600');
+            showToast('Microphone toggled');
+        }
+
+        function toggleVideo() {
+            const btn = document.getElementById('btnVideo');
+            btn.classList.toggle('bg-red-600');
+            showToast('Camera toggled');
+        }
+
+        function toggleShare() {
+            showToast('Screen sharing initialized');
+        }
+
+        function clearChatLog() {
+            document.getElementById('chatMessages').innerHTML = '';
+            showToast('Chat history cleared');
+        }
+    </script>
+</body>
+</html>
