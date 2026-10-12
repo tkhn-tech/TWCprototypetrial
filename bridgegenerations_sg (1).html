@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BridgeGenerations SG | Intergenerational Skill Exchange</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        sgnavy: {
+                            50: '#f0f5fa',
+                            100: '#dbe5f2',
+                            200: '#bbd0e6',
+                            500: '#1d548b',
+                            600: '#0f4073',
+                            700: '#003366',
+                            800: '#00264d',
+                            900: '#001a36',
+                        },
+                        sgred: {
+                            50: '#fff1f1',
+                            100: '#ffe1e1',
+                            500: '#ef3036',
+                            600: '#d9252a',
+                            700: '#b71c21',
+                        },
+                        sgteal: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .font-scale-normal { font-size: 100%; }
+        .font-scale-large { font-size: 112.5%; }
+        .font-scale-xlarge { font-size: 125%; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 font-scale-normal bg-slate-50 antialiased selection:bg-sgnavy-700 selection:text-white" id="appBody">
+
+    <div class="bg-slate-900 text-white text-xs py-2 px-4 sm:px-8 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center font-bold text-[11px] text-slate-300">
+                    <i class="fa-solid fa-people-arrows text-amber-400 mr-2"></i>
+                    Singapore Intergenerational Community Exchange Network (50+ Active Members)
+                </span>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <!-- User Switcher & Custom Account Creator -->
+                <div class="flex items-center space-x-2 bg-slate-800 px-2.5 py-1 rounded border border-slate-700">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-[11px] text-slate-300 font-semibold hidden sm:inline">Active Profile:</span>
+                    <select id="userSelector" onchange="switchUser(this.value)" class="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer max-w-[200px] sm:max-w-[280px] truncate">
+                        <!-- Populated dynamically via JS -->
+                    </select>
+                </div>
+
+                <!-- Create Custom Account Button -->
+                <button onclick="openCreateProfileModal()" class="px-2.5 py-1 bg-amber-400 hover:bg-amber-300 text-slate-900 font-black text-xs rounded transition flex items-center space-x-1 shadow">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span class="hidden sm:inline">Create Profile</span>
+                </button>
+
+                <!-- Accessibility Font Resizer -->
+                <div class="flex items-center space-x-1 bg-slate-800 px-2 py-0.5 rounded border border-slate-700" title="Adjust Text Size">
+                    <span class="text-[10px] text-slate-400 font-bold mr-1 hidden md:inline">TEXT:</span>
+                    <button onclick="setFontScale('normal')" class="px-1.5 py-0.5 text-xs font-bold hover:bg-slate-700 text-slate-200 rounded">A</button>
+                    <button onclick="setFontScale('large')" class="px-1.5 py-0.5 text-xs font-extrabold hover:bg-slate-700 text-white rounded">A+</button>
+                    <button onclick="setFontScale('xlarge')" class="px-1.5 py-0.5 text-sm font-black hover:bg-slate-700 text-amber-300 rounded">A++</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="bg-sgnavy-700 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Brand Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('matchmaker')">
+                    <div class="w-11 h-11 bg-white rounded-lg p-1.5 flex items-center justify-center shadow-sm">
+                        <i class="fa-solid fa-bridge-water text-sgnavy-700 text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xl sm:text-2xl font-black tracking-tight text-white">BridgeGenerations SG</span>
+                            <span class="bg-amber-400 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded tracking-wide uppercase">Community Hub</span>
+                        </div>
+                        <p class="text-xs text-sgnavy-100 font-medium">Intergenerational Skill Exchange & Cultural Heritage Sharing</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1">
+                    <button onclick="switchTab('matchmaker')" id="nav-matchmaker" class="nav-btn px-4 py-2.5 rounded-md text-xs font-bold transition flex items-center space-x-2 bg-sgnavy-800 text-white border-b-2 border-amber-400">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>AI Matchmaker</span>
+                    </button>
+                    <button onclick="switchTab('schedule')" id="nav-schedule" class="nav-btn px-4 py-2.5 rounded-md text-xs font-bold transition flex items-center space-x-2 text-sgnavy-100 hover:bg-sgnavy-800 hover:text-white">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>Sessions & Bookings</span>
+                        <span id="badgeUpcomingCount" class="ml-1 bg-sgred-600 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full">2</span>
+                    </button>
+                    <button onclick="switchTab('portfolio')" id="nav-portfolio" class="nav-btn px-4 py-2.5 rounded-md text-xs font-bold transition flex items-center space-x-2 text-sgnavy-100 hover:bg-sgnavy-800 hover:text-white">
+                        <i class="fa-solid fa-award"></i>
+                        <span>Skills Portfolio</span>
+                    </button>
+                    <button onclick="switchTab('hubs')" id="nav-hubs" class="nav-btn px-4 py-2.5 rounded-md text-xs font-bold transition flex items-center space-x-2 text-sgnavy-100 hover:bg-sgnavy-800 hover:text-white">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Community CC Hubs</span>
+                    </button>
+                </nav>
+
+                <!-- Active User Summary Badge -->
+                <div class="hidden sm:flex items-center space-x-3 bg-sgnavy-800 px-3.5 py-2 rounded-lg border border-sgnavy-600 cursor-pointer" onclick="switchTab('portfolio')">
+                    <img id="headerUserAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=120" alt="Member Avatar" class="w-9 h-9 rounded-full ring-2 ring-amber-400 object-cover">
+                    <div class="text-left">
+                        <div id="headerUserName" class="text-xs font-extrabold text-white">Auntie Tan Bee Lan</div>
+                        <div id="headerUserRole" class="text-[10px] text-emerald-400 font-bold flex items-center">
+                            <i class="fa-solid fa-circle-check mr-1"></i> Verified Member
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Sub-bar -->
+        <div class="md:hidden bg-sgnavy-800 border-t border-sgnavy-600 px-2 py-2 flex justify-around">
+            <button onclick="switchTab('matchmaker')" id="mobile-nav-matchmaker" class="px-2 py-1 text-xs font-bold text-amber-300 flex flex-col items-center">
+                <i class="fa-solid fa-wand-magic-sparkles mb-0.5"></i>
+                <span>Matchmaker</span>
+            </button>
+            <button onclick="switchTab('schedule')" id="mobile-nav-schedule" class="px-2 py-1 text-xs font-bold text-slate-300 flex flex-col items-center">
+                <i class="fa-regular fa-calendar-check mb-0.5"></i>
+                <span>Sessions</span>
+            </button>
+            <button onclick="switchTab('portfolio')" id="mobile-nav-portfolio" class="px-2 py-1 text-xs font-bold text-slate-300 flex flex-col items-center">
+                <i class="fa-solid fa-award mb-0.5"></i>
+                <span>Portfolio</span>
+            </button>
+            <button onclick="switchTab('hubs')" id="mobile-nav-hubs" class="px-2 py-1 text-xs font-bold text-slate-300 flex flex-col items-center">
+                <i class="fa-solid fa-location-dot mb-0.5"></i>
+                <span>CC Hubs</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= TAB 1: AI SKILL MATCHMAKER ================= -->
+        <section id="tab-matchmaker" class="tab-content active space-y-6">
+            
+            <!-- Hero Announcement Banner -->
+            <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-sm border-l-8 border-l-sgnavy-700 relative overflow-hidden">
+                <div class="max-w-4xl">
+                    <div class="flex flex-wrap items-center gap-2 mb-3">
+                        <span class="px-2.5 py-0.5 bg-sgnavy-50 text-sgnavy-700 text-xs font-bold rounded border border-sgnavy-200">
+                            <i class="fa-solid fa-handshake-simple mr-1"></i> Intergenerational Skill Exchange
+                        </span>
+                        <span class="px-2.5 py-0.5 bg-amber-50 text-amber-800 text-xs font-bold rounded border border-amber-200">
+                            50+ Registered Members Across Singapore
+                        </span>
+                        <button onclick="openCreateProfileModal()" class="px-2.5 py-0.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded shadow transition">
+                            <i class="fa-solid fa-plus-circle mr-1"></i> Register Your Profile
+                        </button>
+                    </div>
+
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-sgnavy-700 tracking-tight mb-2">
+                        Don't Just Connect Generations — Let Them Learn From Each Other
+                    </h1>
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
+                        Match with neighborhood seniors or youth volunteers across Singapore. Exchange heritage wisdom (Peranakan cooking, dialect proverbs, life skills) for modern digital tools (Singpass, CDC Vouchers, AI tools, TikTok, Canva).
+                    </p>
+
+                    <!-- Search and Filters Bar -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                            <input type="text" id="skillSearchInput" onkeyup="filterCards()" placeholder="Search skills (e.g. AI, Laksa, Singpass, Canva)..." class="w-full pl-10 pr-3 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-sgnavy-700 focus:outline-none bg-slate-50">
+                        </div>
+
+                        <select id="categoryFilter" onchange="filterCards()" class="px-3 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-sgnavy-700 bg-slate-50 font-medium">
+                            <option value="all">All Skill Categories</option>
+                            <option value="digital">Digital & AI Literacy</option>
+                            <option value="cooking">Heritage Cooking & Crafts</option>
+                            <option value="scam">Scam Defense & E-Payments</option>
+                            <option value="media">Creative, Video & Social Media</option>
+                            <option value="culture">Dialects, History & Life Wisdom</option>
+                            <option value="lifestyle">Gardening, Fitness & Finance</option>
+                        </select>
+
+                        <select id="townFilter" onchange="filterCards()" class="px-3 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-sgnavy-700 bg-slate-50 font-medium">
+                            <option value="all">All Singapore Zones</option>
+                            <option value="Central">Central (Toa Payoh, Bishan, Queenstown)</option>
+                            <option value="East">East (Tampines, Bedok, Pasir Ris)</option>
+                            <option value="West">West (Clementi, Jurong East, Bukit Batok)</option>
+                            <option value="North">North (Woodlands, Yishun, Sembawang)</option>
+                            <option value="North-East">North-East (Punggol, Sengkang, Ang Mo Kio)</option>
+                        </select>
+
+                        <button onclick="runAiMatchmaker()" class="px-4 py-2.5 bg-sgred-600 hover:bg-sgred-700 text-white font-bold text-xs sm:text-sm rounded-lg transition shadow flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>AI Compatibility Match</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Compatibility Highlight Box -->
+            <div id="aiMatchHighlightBox" class="hidden bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded-lg shadow-sm">
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-microchip text-emerald-700 text-xl mt-0.5"></i>
+                    <div>
+                        <h4 class="text-sm font-bold text-emerald-900 flex items-center justify-between">
+                            <span>BridgeAI Intergenerational Match Engine</span>
+                            <span id="aiMatchPercent" class="text-xs bg-emerald-200 text-emerald-900 font-extrabold px-2 py-0.5 rounded">High Synergy Match</span>
+                        </h4>
+                        <p id="aiMatchHighlightText" class="text-xs sm:text-sm text-emerald-800 mt-1 leading-relaxed">
+                            Evaluating mutual goals...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Cards Grid -->
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-base font-extrabold text-sgnavy-700 flex items-center space-x-2">
+                        <i class="fa-solid fa-users text-sgred-600"></i>
+                        <span>Exchange Partners in Singapore</span>
+                    </h2>
+                    <div class="flex items-center space-x-2">
+                        <span id="partnerCountBadge" class="text-xs bg-sgnavy-100 text-sgnavy-800 font-extrabold px-3 py-1 rounded-full">Loading...</span>
+                    </div>
+                </div>
+
+                <div id="partnersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic Partner Cards Rendered via JavaScript -->
+                </div>
+
+                <!-- Load More Button -->
+                <div id="loadMoreContainer" class="text-center pt-6 hidden">
+                    <button onclick="loadMorePartners()" class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-lg transition shadow">
+                        Show More Members
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: SESSIONS & SCHEDULE ================= -->
+        <section id="tab-schedule" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-2xl font-extrabold text-sgnavy-700 tracking-tight">Your Skill Exchange Schedule</h1>
+                    <p class="text-xs sm:text-sm text-slate-600 mt-1">Manage video calls and in-person meetups at local Community Clubs.</p>
+                </div>
+                <button onclick="openBookingModal()" class="px-4 py-2.5 bg-sgnavy-700 hover:bg-sgnavy-800 text-white font-bold text-xs rounded-lg shadow transition flex items-center space-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Schedule New Exchange</span>
+                </button>
+            </div>
+
+            <!-- Sessions List -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Upcoming Sessions Column -->
+                <div class="lg:col-span-2 space-y-4">
+                    <h2 class="text-sm font-extrabold text-sgnavy-700 uppercase tracking-wide flex items-center space-x-2">
+                        <i class="fa-regular fa-clock text-amber-500"></i>
+                        <span>Upcoming Confirmed Sessions</span>
+                    </h2>
+                    
+                    <div id="upcomingSessionsList" class="space-y-3">
+                        <!-- Dynamic content populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Past Sessions & Feedback -->
+                <div class="space-y-4">
+                    <h2 class="text-sm font-extrabold text-sgnavy-700 uppercase tracking-wide flex items-center space-x-2">
+                        <i class="fa-solid fa-history text-emerald-600"></i>
+                        <span>Completed Exchange History</span>
+                    </h2>
+                    
+                    <div id="pastSessionsList" class="space-y-3">
+                        <!-- Dynamic content populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: DIGITAL SKILLS PORTFOLIO ================= -->
+        <section id="tab-portfolio" class="tab-content space-y-6">
+            <!-- User Summary Header -->
+            <div class="bg-gradient-to-r from-sgnavy-800 to-sgnavy-700 text-white rounded-xl p-6 sm:p-8 shadow-md">
+                <div class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+                    <img id="portfolioAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200" alt="Avatar" class="w-24 h-24 rounded-full ring-4 ring-amber-400 object-cover shadow">
+                    <div class="flex-grow text-center md:text-left">
+                        <div class="flex flex-col md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-3">
+                            <h1 id="portfolioName" class="text-2xl font-extrabold">Auntie Tan Bee Lan</h1>
+                            <span id="portfolioBadge" class="px-2.5 py-0.5 bg-emerald-500 text-white text-[11px] font-black rounded-full uppercase self-center md:self-auto">Verified Citizen</span>
+                        </div>
+                        <p id="portfolioLocation" class="text-xs text-sgnavy-100 font-medium mt-1">Toa Payoh Central • Silver Generation Member</p>
+                        <p id="portfolioBio" class="text-xs sm:text-sm text-slate-200 mt-2 max-w-2xl">Loves sharing authentic Nyonya recipes and learning how to safely navigate Singpass and e-payments.</p>
+                        
+                        <!-- Stats Bar -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-4 border-t border-sgnavy-600/80 text-center">
+                            <div class="bg-sgnavy-900/60 p-2.5 rounded-lg border border-sgnavy-600">
+                                <span id="statHoursTaught" class="text-xl font-black text-amber-400">18 hrs</span>
+                                <p class="text-[10px] text-slate-300 font-bold uppercase">Heritage Taught</p>
+                            </div>
+                            <div class="bg-sgnavy-900/60 p-2.5 rounded-lg border border-sgnavy-600">
+                                <span id="statHoursLearned" class="text-xl font-black text-emerald-400">14 hrs</span>
+                                <p class="text-[10px] text-slate-300 font-bold uppercase">Digital Learned</p>
+                            </div>
+                            <div class="bg-sgnavy-900/60 p-2.5 rounded-lg border border-sgnavy-600">
+                                <span id="statBadges" class="text-xl font-black text-sky-400">6</span>
+                                <p class="text-[10px] text-slate-300 font-bold uppercase">Badges Earned</p>
+                            </div>
+                            <div class="bg-sgnavy-900/60 p-2.5 rounded-lg border border-sgnavy-600">
+                                <span id="statKampungScore" class="text-xl font-black text-rose-400">98 pts</span>
+                                <p class="text-[10px] text-slate-300 font-bold uppercase">Kampung Spirit</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portfolio Credentials Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Skills Learned Card -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                        <h2 class="font-extrabold text-sgnavy-700 text-sm flex items-center space-x-2">
+                            <i class="fa-solid fa-graduation-cap text-emerald-600"></i>
+                            <span>Verified Digital Skills Acquired</span>
+                        </h2>
+                        <span class="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Digital Passport</span>
+                    </div>
+
+                    <div id="skillsLearnedList" class="space-y-2.5">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Skills Shared / Heritage Card -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                        <h2 class="font-extrabold text-sgnavy-700 text-sm flex items-center space-x-2">
+                            <i class="fa-solid fa-heart text-sgred-600"></i>
+                            <span>Heritage Knowledge Taught</span>
+                        </h2>
+                        <span class="text-[11px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">Cultural Mentor</span>
+                    </div>
+
+                    <div id="skillsSharedList" class="space-y-2.5">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Official Kampung Spirit Certificate Preview Callout -->
+            <div class="bg-slate-900 text-white p-6 rounded-xl border border-slate-800 shadow flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-amber-400 text-slate-900 rounded-full flex items-center justify-center text-2xl font-black">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base">Community Spirit Recognition</h3>
+                        <p class="text-xs text-slate-400">Generate a verified digital certificate recording your contributions to Singapore's intergenerational community exchange.</p>
+                    </div>
+                </div>
+                <button onclick="generateCertificate()" class="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-xs rounded-lg transition shadow whitespace-nowrap">
+                    View Certificate
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: COMMUNITY CC HUBS ================= -->
+        <section id="tab-hubs" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h1 class="text-2xl font-extrabold text-sgnavy-700">Singapore Community Exchange Hubs</h1>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">Book free, quiet physical exchange corners equipped with Wi-Fi and digital aids at local Community Clubs.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Hub 1 -->
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow transition">
+                    <img src="https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&q=80&w=400" class="w-full h-36 object-cover" alt="Toa Payoh CC">
+                    <div class="p-4 space-y-2">
+                        <span class="text-[10px] bg-sgnavy-100 text-sgnavy-800 font-bold px-2 py-0.5 rounded">Central Zone</span>
+                        <h3 class="font-extrabold text-sgnavy-700 text-sm">Toa Payoh West CC</h3>
+                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-sgred-600 mr-1"></i>200 Lor 2 Toa Payoh</p>
+                        <p class="text-[11px] text-slate-500">Facilities: Senior Tech Lounge, Kitchen Studio</p>
+                        <button onclick="bookHubVenue('Toa Payoh West CC')" class="w-full mt-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded">Reserve Table</button>
+                    </div>
+                </div>
+
+                <!-- Hub 2 -->
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow transition">
+                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=400" class="w-full h-36 object-cover" alt="Our Tampines Hub">
+                    <div class="p-4 space-y-2">
+                        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">East Zone</span>
+                        <h3 class="font-extrabold text-sgnavy-700 text-sm">Our Tampines Hub</h3>
+                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-sgred-600 mr-1"></i>1 Tampines Walk</p>
+                        <p class="text-[11px] text-slate-500">Facilities: Culinary Arts Room, Digital Corner</p>
+                        <button onclick="bookHubVenue('Our Tampines Hub')" class="w-full mt-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded">Reserve Table</button>
+                    </div>
+                </div>
+
+                <!-- Hub 3 -->
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow transition">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=400" class="w-full h-36 object-cover" alt="Kampung Admiralty">
+                    <div class="p-4 space-y-2">
+                        <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">North Zone</span>
+                        <h3 class="font-extrabold text-sgnavy-700 text-sm">Kampung Admiralty</h3>
+                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-sgred-600 mr-1"></i>676 Woodlands Drive 71</p>
+                        <p class="text-[11px] text-slate-500">Facilities: Community Plaza, Intergen Garden</p>
+                        <button onclick="bookHubVenue('Kampung Admiralty')" class="w-full mt-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded">Reserve Table</button>
+                    </div>
+                </div>
+
+                <!-- Hub 4 -->
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow transition">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=400" class="w-full h-36 object-cover" alt="Jurong Library">
+                    <div class="p-4 space-y-2">
+                        <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded">West Zone</span>
+                        <h3 class="font-extrabold text-sgnavy-700 text-sm">Jurong Regional Library</h3>
+                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-sgred-600 mr-1"></i>21 Jurong East Central 1</p>
+                        <p class="text-[11px] text-slate-500">Facilities: Pixel Labs, Quiet Study Pods</p>
+                        <button onclick="bookHubVenue('Jurong Regional Library')" class="w-full mt-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded">Reserve Table</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODAL: CREATE / CONFIGURE USER PROFILE ================= -->
+    <div id="createProfileModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-xl w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-sgred-600 text-white flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-user-plus text-xs"></i>
+                    </div>
+                    <h3 class="font-extrabold text-sgnavy-700 text-lg">Create Your Skill Exchange Profile</h3>
+                </div>
+                <button onclick="closeCreateProfileModal()" class="text-slate-400 hover:text-slate-800 text-xl font-bold">&times;</button>
+            </div>
+
+            <form id="createProfileForm" onsubmit="saveCustomProfile(event)" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Your Full Name / Alias <span class="text-sgred-600">*</span></label>
+                        <input type="text" id="newUserName" required placeholder="e.g. Uncle David Teo or Sarah Tan" class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold focus:ring-2 focus:ring-sgnavy-700">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Age <span class="text-sgred-600">*</span></label>
+                        <input type="number" id="newUserAge" required min="12" max="100" placeholder="e.g. 68 or 22" class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold focus:ring-2 focus:ring-sgnavy-700">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Role / Generation <span class="text-sgred-600">*</span></label>
+                        <select id="newUserRole" required class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                            <option value="Silver Generation Member">Silver Generation Member (Senior)</option>
+                            <option value="Youth Volunteer">Youth Volunteer (Student)</option>
+                            <option value="Working Professional">Working Professional</option>
+                            <option value="Active Retiree">Active Retiree</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Singapore Town / Location <span class="text-sgred-600">*</span></label>
+                        <select id="newUserLocation" required class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                            <option value="Toa Payoh Central (Central)">Toa Payoh Central (Central Zone)</option>
+                            <option value="Clementi (West)">Clementi (West Zone)</option>
+                            <option value="Our Tampines Hub (East)">Our Tampines Hub (East Zone)</option>
+                            <option value="Woodlands (North)">Woodlands (North Zone)</option>
+                            <option value="Ang Mo Kio (North-East)">Ang Mo Kio (North-East Zone)</option>
+                            <option value="Bedok (East)">Bedok (East Zone)</option>
+                            <option value="Jurong East (West)">Jurong East (West Zone)</option>
+                            <option value="Punggol (North-East)">Punggol (North-East Zone)</option>
+                            <option value="Queenstown (Central)">Queenstown (Central Zone)</option>
+                            <option value="Bishan (Central)">Bishan (Central Zone)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Select Profile Avatar <span class="text-sgred-600">*</span></label>
+                    <div class="grid grid-cols-5 gap-2" id="avatarPickerGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Primary Skill Category <span class="text-sgred-600">*</span></label>
+                    <select id="newUserCategory" required class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                        <option value="digital">Digital & AI Literacy</option>
+                        <option value="cooking">Heritage Cooking & Crafts</option>
+                        <option value="scam">Scam Defense & E-Payments</option>
+                        <option value="media">Creative, Video & Social Media</option>
+                        <option value="culture">Dialects, History & Life Wisdom</option>
+                        <option value="lifestyle">Gardening, Fitness & Finance</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Skills You Can Teach / Share <span class="text-sgred-600">*</span></label>
+                    <input type="text" id="newUserTeaches" required placeholder="e.g. Authentic Peranakan Laksa, Dialect proverbs, Accounting basics..." class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Skills You Want to Learn <span class="text-sgred-600">*</span></label>
+                    <input type="text" id="newUserWantsToLearn" required placeholder="e.g. Singpass login, TikTok video editing, Canva, AI tools..." class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Short Bio / Story</label>
+                    <textarea id="newUserBio" rows="2" placeholder="Share a brief introduction about yourself and what you hope to exchange in your neighborhood..." class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-2 border-t">
+                    <button type="button" onclick="closeCreateProfileModal()" class="px-4 py-2 bg-slate-200 text-slate-800 text-xs font-bold rounded-lg">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-sgnavy-700 hover:bg-sgnavy-800 text-white text-xs font-bold rounded-lg shadow">Create Profile & Start Matching</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: LIVE EXCHANGE SESSION SIMULATOR ================= -->
+    <div id="exchangeCallModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="bg-sgnavy-800 text-white px-6 py-4 flex justify-between items-center border-b border-sgnavy-700">
+                <div class="flex items-center space-x-3">
+                    <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+                    <div>
+                        <h3 id="callModalPartnerName" class="font-extrabold text-base">Exchange Call</h3>
+                        <p class="text-xs text-sgnavy-100">Live Intergenerational Skill Exchange Room</p>
+                    </div>
+                </div>
+                <button onclick="closeExchangeModal()" class="text-slate-300 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+                <!-- Video Simulator Display -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900 rounded-xl p-3 relative">
+                    <!-- Partner Video -->
+                    <div class="relative h-48 bg-slate-800 rounded-lg overflow-hidden border border-slate-700 flex items-center justify-center">
+                        <img id="callModalPartnerAvatar" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover">
+                        <div class="absolute bottom-2 left-2 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-white font-bold flex items-center space-x-1">
+                            <span id="callModalPartnerTag">Partner</span>
+                        </div>
+                    </div>
+
+                    <!-- User Video -->
+                    <div class="relative h-48 bg-slate-800 rounded-lg overflow-hidden border border-slate-700 flex items-center justify-center">
+                        <img id="callModalUserAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover">
+                        <div class="absolute bottom-2 left-2 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-white font-bold">
+                            You
+                        </div>
+                    </div>
+
+                    <!-- Call Control Controls Bar -->
+                    <div class="col-span-1 md:col-span-2 bg-slate-800 p-2.5 rounded-lg flex items-center justify-center space-x-4 border border-slate-700">
+                        <button id="btnMic" onclick="toggleMic()" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <button id="btnVideo" onclick="toggleCam()" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-video"></i>
+                        </button>
+                        <button onclick="generateGeminiLessonPlan()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold rounded-lg flex items-center space-x-1.5 shadow">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>AI Icebreaker & Agenda</span>
+                        </button>
+                        <button onclick="finishExchangeCall()" class="px-4 py-1.5 bg-sgred-600 hover:bg-sgred-700 text-white text-xs font-bold rounded-lg shadow">
+                            Complete & Award Badge
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Lesson & Icebreaker Assistant Box -->
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-amber-900 text-xs sm:text-sm flex items-center space-x-2">
+                            <i class="fa-solid fa-lightbulb text-amber-600"></i>
+                            <span>BridgeAI Intergenerational Co-Pilot Guide</span>
+                        </h4>
+                        <span class="text-[10px] bg-amber-200 text-amber-900 font-bold px-2 py-0.5 rounded">Singapore Context</span>
+                    </div>
+                    
+                    <div id="aiLessonContent" class="text-xs sm:text-sm text-amber-950 space-y-2 leading-relaxed">
+                        <p class="font-semibold text-slate-800">Welcome to your exchange session!</p>
+                        <ul class="list-disc pl-5 space-y-1 text-slate-700">
+                            <li><strong>Icebreaker Prompt:</strong> Share your favorite childhood memories or neighborhood hawker stalls in Singapore!</li>
+                            <li><strong>Part 1 (Digital Literacy):</strong> Walk through mobile setup, step-by-step with patient explanation.</li>
+                            <li><strong>Part 2 (Heritage Exchange):</strong> Discuss authentic local recipes or dialect phrases.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: CERTIFICATE PREVIEW ================= -->
+    <div id="certificateModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full p-6 space-y-6 shadow-2xl relative border-4 border-amber-400">
+            <button onclick="closeCertModal()" class="absolute top-3 right-4 text-slate-400 hover:text-slate-800 text-2xl font-bold">&times;</button>
+            
+            <div class="text-center space-y-3 pt-2">
+                <div class="w-16 h-16 bg-sgnavy-700 text-amber-400 rounded-full flex items-center justify-center text-3xl mx-auto shadow-md">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <span class="text-xs font-black tracking-widest text-sgnavy-700 uppercase">BridgeGenerations SG Certificate</span>
+                <h2 class="text-2xl font-black text-slate-900">Kampung Spirit Skill Exchange Recognition</h2>
+                <p class="text-xs text-slate-500 max-w-md mx-auto">This certifies that the member has contributed meaningfully to intergenerational learning and digital literacy in Singapore.</p>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 text-center space-y-2">
+                <p class="text-xs text-slate-500 font-bold uppercase">Awarded To</p>
+                <h3 id="certUserName" class="text-xl font-extrabold text-sgnavy-700">Auntie Tan Bee Lan</h3>
+                <p id="certUserDetails" class="text-xs text-slate-600 font-medium">18 Hours Heritage Knowledge Shared • 14 Hours Digital Skills Mastered</p>
+                <div class="pt-4 flex justify-center space-x-2">
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Community Verified</span>
+                    <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Community Club Ambassador</span>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeCertModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-lg">Close</button>
+                <button onclick="triggerCopyCert()" class="px-5 py-2 bg-sgnavy-700 hover:bg-sgnavy-800 text-white text-xs font-bold rounded-lg shadow">Copy Certificate Link</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: BOOK SESSION ================= -->
+    <div id="bookingModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-sgnavy-700 text-base">Schedule New Skill Exchange</h3>
+                <button onclick="closeBookingModal()" class="text-slate-400 hover:text-slate-800 text-xl font-bold">&times;</button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Select Exchange Partner</label>
+                    <select id="bookingPartnerSelect" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Exchange Mode / Venue</label>
+                    <select id="bookingVenueSelect" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                        <option value="Video Call">BridgeGenerations Live Video Call</option>
+                        <option value="Toa Payoh West CC">Toa Payoh West CC Tech Lounge</option>
+                        <option value="Our Tampines Hub">Our Tampines Hub Culinary Studio</option>
+                        <option value="Jurong Regional Library">Jurong Regional Library Pixel Lab</option>
+                        <option value="Kampung Admiralty">Kampung Admiralty Intergen Plaza</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Date</label>
+                        <input type="date" id="bookingDate" value="2026-10-18" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Time</label>
+                        <input type="time" id="bookingTime" value="14:00" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-semibold">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Exchange Goals / Notes</label>
+                    <textarea id="bookingNotes" rows="2" placeholder="e.g. Learning PayNow QR setup while sharing traditional herbal soup prep." class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-slate-50"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-2 border-t">
+                <button onclick="closeBookingModal()" class="px-4 py-2 bg-slate-200 text-slate-800 text-xs font-bold rounded-lg">Cancel</button>
+                <button onclick="confirmBooking()" class="px-5 py-2 bg-sgnavy-700 text-white text-xs font-bold rounded-lg shadow">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preset Avatars Pool for User Creation
+        const presetAvatars = [
+            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1548142813-c348350df52b?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200',
+            'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200'
+        ];
+
+        // User Database State - Pool of 50 Diverse Users
+        const usersDatabase = {
+            beelan: {
+                id: 'beelan',
+                name: 'Auntie Tan Bee Lan',
+                age: 74,
+                role: 'Senior Citizen',
+                location: 'Toa Payoh Central (Central)',
+                zone: 'Central',
+                avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200',
+                teaches: 'Heritage Nyonya Kueh & Laksa Rempah, Hokkien Storytelling',
+                wantsToLearn: 'Singpass Verification, CDC Voucher Redemption, Scam Shield',
+                hoursTaught: 18,
+                hoursLearned: 14,
+                badgesCount: 6,
+                kampungScore: 98,
+                bio: 'Loves sharing authentic Nyonya recipes and learning how to safely navigate Singpass and e-payments.',
+                category: 'cooking',
+                skillsLearned: [
+                    { title: 'Singpass Face Verification Master', mentor: 'Ryan Lim', date: 'Oct 2026', badge: 'Digital Passport' },
+                    { title: 'CDC Voucher Online Redemption', mentor: 'Kevyn S.', date: 'Sep 2026', badge: 'E-Wallet' }
+                ],
+                skillsShared: [
+                    { title: 'Authentic Nyonya Laksa Paste from Scratch', learner: 'Ryan Lim', date: 'Oct 2026', badge: 'Heritage Chef' }
+                ]
+            },
+            ryan: {
+                id: 'ryan',
+                name: 'Ryan Lim',
+                age: 21,
+                role: 'NUS Student Volunteer',
+                location: 'Clementi (West)',
+                zone: 'West',
+                avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200',
+                teaches: 'Singpass Setup, PayNow QR, Mobile Scam Defense, Video Editing',
+                wantsToLearn: 'Heritage Nyonya Cooking, Authentic Malay Sambal',
+                hoursTaught: 24,
+                hoursLearned: 12,
+                badgesCount: 8,
+                kampungScore: 96,
+                bio: 'Computing undergrad passionate about empowering seniors with digital confidence while learning local heritage cooking.',
+                category: 'digital',
+                skillsLearned: [{ title: 'Nyonya Rempah Grinding', mentor: 'Auntie Tan', date: 'Oct 2026', badge: 'Heritage Chef' }],
+                skillsShared: [{ title: 'Singpass & CDC Voucher Guide', learner: 'Auntie Tan', date: 'Oct 2026', badge: 'Tech Mentor' }]
+            },
+            fatimah: {
+                id: 'fatimah',
+                name: 'Mdm Fatimah Hassan',
+                age: 68,
+                role: 'Senior Community Leader',
+                location: 'Our Tampines Hub (East)',
+                zone: 'East',
+                avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
+                teaches: 'Traditional Beef Rendang, Balcony Herb Gardening, Malay Culture',
+                wantsToLearn: 'Canva Poster Creation, WhatsApp Group Admin',
+                hoursTaught: 20,
+                hoursLearned: 10,
+                badgesCount: 5,
+                kampungScore: 95,
+                bio: 'Enthusiastic home cook and community volunteer eager to design posters for active ageing club events.',
+                category: 'cooking',
+                skillsLearned: [], skillsShared: []
+            },
+            kevyn: {
+                id: 'kevyn',
+                name: 'Kevyn Subramaniam',
+                age: 23,
+                role: 'NTU Digital Ambassador',
+                location: 'Bishan (Central)',
+                zone: 'Central',
+                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+                teaches: 'Smartphone Troubleshooting, SGQR E-Wallets, Online Banking Safety',
+                wantsToLearn: 'Indian & Malay Spice Blending, Traditional Board Games',
+                hoursTaught: 30,
+                hoursLearned: 15,
+                badgesCount: 9,
+                kampungScore: 99,
+                bio: 'Loves teaching seniors how to safely use digital payment apps and learning traditional local recipes.',
+                category: 'scam',
+                skillsLearned: [], skillsShared: []
+            },
+            // Generate Additional 46 Diverse Singapore Users
+            ...generateUserPool()
+        };
+
+        function generateUserPool() {
+            const extraPool = {};
+            
+            const seniorsData = [
+                { id: 'uncle_chua', name: 'Uncle Chua Kim Teck', age: 78, role: 'Active Retiree', town: 'Ang Mo Kio (North-East)', zone: 'North-East', cat: 'culture', teaches: 'Traditional Hainanese Chicken Rice Rice-Paste, Teochew Dialect Stories', wants: 'ChatGPT & AI Smartphone Assistants, Online Taxi Booking', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', bio: 'Former hawker master who loves sharing Hainanese culinary secrets and learning smart device shortcuts.' },
+                { id: 'mdm_leong', name: 'Mdm Leong Siew Fong', age: 81, role: 'Senior Citizen', town: 'Queenstown (Central)', zone: 'Central', cat: 'lifestyle', teaches: 'Traditional Chinese Herbal Soups, Cantonese Operatic Singing', wants: 'WhatsApp Video Calls with Overseas Grandkids, Scam Shield App', avatar: 'https://images.unsplash.com/photo-1548142813-c348350df52b?auto=format&fit=crop&q=80&w=200', bio: 'Passionate about Cantonese cultural songs and maintaining good health through traditional herbal remedies.' },
+                { id: 'uncle_muthu', name: 'Uncle Muthukrishnan', age: 72, role: 'Senior Volunteer', town: 'Jurong East (West)', zone: 'West', cat: 'lifestyle', teaches: 'Traditional South Indian Fish Head Curry Spices, Bonsai Gardening', wants: 'Singpass Login, FairPrice Online Grocery Shopping', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200', bio: 'Avid gardener with 40 years of spice blending expertise looking to order groceries online safely.' },
+                { id: 'auntie_rohani', name: 'Auntie Rohani Kassim', age: 70, role: 'Senior Artisan', town: 'Bedok (East)', zone: 'East', cat: 'cooking', teaches: 'Authentic Malay Epok-Epok & Sambal Tumis, Batik Sewing', wants: 'TikTok Short Video Uploading, PayNow QR Scan', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200', bio: 'Bakes delicious traditional snacks and wants to showcase her step-by-step recipes on TikTok.' },
+                { id: 'uncle_ong', name: 'Uncle Ong Hock Seng', age: 76, role: 'Retired Accountant', town: 'Toa Payoh Central (Central)', zone: 'Central', cat: 'culture', teaches: 'Personal Budgeting & Accounting, Classic Mahjong Strategy', wants: 'E-Wallet Transfer Safety, Singpass App Navigation', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', bio: 'Retired certified accountant eager to mentor youth on financial literacy while mastering mobile e-wallets.' },
+                { id: 'auntie_mary', name: 'Auntie Mary De Cruz', age: 75, role: 'Eurasian Heritage Mentor', town: 'Marine Parade (Central)', zone: 'Central', cat: 'cooking', teaches: 'Eurasian Sugee Cake & Devil’s Curry, Old Singapore History (1960s)', wants: 'Instagram Reels Creation, Spotify Playlist Setup', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200', bio: 'Proud Eurasian home cook who loves playing acoustic guitar and sharing Singapore’s post-war history.' },
+                { id: 'uncle_tan_kb', name: 'Uncle Tan Kok Poh', age: 79, role: 'Senior Craftsman', town: 'Woodlands (North)', zone: 'North', cat: 'cooking', teaches: 'Traditional Wood Carving, Ang Ku Kueh Mold Crafting', wants: 'YouTube Video Search, Singpass Digital Card', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200', bio: 'Woodcarving hobbyist keeping traditional kueh wooden molds alive.' },
+                { id: 'auntie_kamala', name: 'Auntie Kamala Devi', age: 69, role: 'Community Elder', town: 'Yishun (North)', zone: 'North', cat: 'lifestyle', teaches: 'Chair Yoga for Seniors, Kolam Flour Art, Traditional Chutneys', wants: 'WhatsApp Group Broadcasting, Scam Shield App', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200', bio: 'Leads active ageing morning yoga sessions at Yishun CC.' },
+                { id: 'uncle_lim_ch', name: 'Uncle Lim Chee Hock', age: 83, role: 'Pioneer Generation Elder', town: 'Bukit Merah (Central)', zone: 'Central', cat: 'culture', teaches: 'Early Kampong Life Stories (Kampong Lorong Buangkok), Hokkien Calligraphy', wants: 'Voice-to-Text Messaging, Mobile Scam Identification', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', bio: 'Pioneer generation Singaporean keen to record his oral history for younger generations.' },
+                { id: 'mdm_noraini', name: 'Mdm Noraini Samad', age: 66, role: 'Active Senior', town: 'Punggol (North-East)', zone: 'North-East', cat: 'lifestyle', teaches: 'Balcony Hydroponic Vegetables, Traditional Rendang Paste', wants: 'CapCut Video Editing, GrabApp Car Booking', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200', bio: 'Urban farming enthusiast growing fresh chilies and herbs on her HDB balcony.' }
+            ];
+
+            const youthData = [
+                { id: 'chloe_tan', name: 'Chloe Tan', age: 19, role: 'Polytechnic Student', town: 'Punggol (North-East)', zone: 'North-East', cat: 'media', teaches: 'Canva Design, TikTok Video Editing, Instagram Reels', wants: 'Traditional Nyonya Kueh Making, Dialect Basics', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200', bio: 'Media design student wanting to create digital archives of traditional local recipes.' },
+                { id: 'darren_goh', name: 'Darren Goh', age: 22, role: 'SMU Business Student', town: 'Bishan (Central)', zone: 'Central', cat: 'digital', teaches: 'E-Commerce Setup, Shopee/Lazada Safety, Digital Payments', wants: 'Hokkien Dialect Conversational, Home Cooked Soups', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', bio: 'E-commerce enthusiast who loves helping seniors set up digital shops safely.' },
+                { id: 'priya_ram', name: 'Priya Ramasamy', age: 20, role: 'Youth Digital Ambassador', town: 'Sengkang (North-East)', zone: 'North-East', cat: 'scam', teaches: 'Scam Shield Setup, Singpass Verification, QR Code Defense', wants: 'Traditional Indian Spice Blending, Batik Craft', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200', bio: 'Volunteers at Silver Generation Office to protect seniors from online scams.' },
+                { id: 'aaron_lee', name: 'Aaron Lee', age: 24, role: 'SUTD Tech Fellow', town: 'Jurong East (West)', zone: 'West', cat: 'digital', teaches: 'AI Prompts (ChatGPT/Claude), Smartphone Basic Controls', wants: 'Hainanese Chicken Rice Paste, Old SG Stories', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200', bio: 'AI researcher excited to show seniors how voice AI assistants can make daily life easier.' },
+                { id: 'nurul_ain', name: 'Nurul Ain', age: 18, role: 'Youth Volunteer', town: 'Tampines (East)', zone: 'East', cat: 'media', teaches: 'Mobile Photography, Photo Filters & Album Organizing', wants: 'Malay Heritage Epok-Epok Recipe, Traditional Weaving', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200', bio: 'Loves teaching seniors how to take crisp photos of their plants and dishes.' },
+                { id: 'weijie_chen', name: 'Wei Jie Chen', age: 23, role: 'NTU Engineering Student', town: 'Clementi (West)', zone: 'West', cat: 'digital', teaches: 'WiFi Router Optimization, Laptop Maintenance, Cloud Storage', wants: 'Teochew Porridge Dishes, Mahjong Strategy', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', bio: 'Handyman for computer glitches and smart TV setups.' },
+                { id: 'siddharth_m', name: 'Siddharth Menon', age: 21, role: 'Youth Volunteer', town: 'Bedok (East)', zone: 'East', cat: 'scam', teaches: 'PayNow Safety, E-Wallet Cashless Payments, Online Banking', wants: 'South Indian Murukku Recipe, Bonsai Gardening', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200', bio: 'Finance student making e-payment apps friendly and non-intimidating for elders.' },
+                { id: 'samuel_teo', name: 'Samuel Teo', age: 25, role: 'Digital Creator', town: 'Toa Payoh (Central)', zone: 'Central', cat: 'media', teaches: 'YouTube Video Production, Podcast Recording, Microphones', wants: 'Classic Cantonese Herbal Soups, Kampong History', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200', bio: 'Records oral histories of neighborhood seniors to preserve local memory.' }
+            ];
+
+            // Populate up to 50 users by cloning with diverse names and towns
+            let counter = 1;
+
+            // Add defined seniors
+            seniorsData.forEach(s => {
+                extraPool[s.id] = {
+                    id: s.id, name: s.name, age: s.age, role: s.role, location: s.town, zone: s.zone,
+                    avatar: s.avatar, teaches: s.teaches, wantsToLearn: s.wants,
+                    hoursTaught: Math.floor(Math.random() * 25) + 5, hoursLearned: Math.floor(Math.random() * 20) + 3,
+                    badgesCount: Math.floor(Math.random() * 8) + 2, kampungScore: 90 + Math.floor(Math.random() * 10),
+                    bio: s.bio, category: s.cat, skillsLearned: [], skillsShared: []
+                };
+                counter++;
+            });
+
+            // Add defined youth
+            youthData.forEach(y => {
+                extraPool[y.id] = {
+                    id: y.id, name: y.name, age: y.age, role: y.role, location: y.town, zone: y.zone,
+                    avatar: y.avatar, teaches: y.teaches, wantsToLearn: y.wants,
+                    hoursTaught: Math.floor(Math.random() * 30) + 8, hoursLearned: Math.floor(Math.random() * 15) + 2,
+                    badgesCount: Math.floor(Math.random() * 9) + 3, kampungScore: 92 + Math.floor(Math.random() * 8),
+                    bio: y.bio, category: y.cat, skillsLearned: [], skillsShared: []
+                };
+                counter++;
+            });
+
+            // Generate synthetic diverse users to hit total 50 pool
+            const sgTowns = [
+                { town: 'Ang Mo Kio (North-East)', zone: 'North-East' },
+                { town: 'Tampines (East)', zone: 'East' },
+                { town: 'Clementi (West)', zone: 'West' },
+                { town: 'Toa Payoh Central (Central)', zone: 'Central' },
+                { town: 'Woodlands (North)', zone: 'North' },
+                { town: 'Yishun (North)', zone: 'North' },
+                { town: 'Jurong East (West)', zone: 'West' },
+                { town: 'Punggol (North-East)', zone: 'North-East' },
+                { town: 'Queenstown (Central)', zone: 'Central' },
+                { town: 'Bedok (East)', zone: 'East' }
+            ];
+
+            const seniorNames = [
+                'Auntie Florence Wong', 'Uncle K. S. Pillai', 'Mdm Wong Kwai Ying', 'Uncle David Hashim',
+                'Auntie Lily Yeo', 'Uncle Ahmad Dahlan', 'Mdm Tan Siew Khim', 'Uncle Benedict Gomez',
+                'Auntie Grace Ho', 'Uncle Peter Raj', 'Mdm Farida Begum', 'Uncle Patrick Sim',
+                'Auntie Helen Koh', 'Uncle Vincent Poh', 'Mdm Chiam Bee Eng', 'Uncle Hassan Basri'
+            ];
+
+            const youthNames = [
+                'Jasmine Kaur', 'Marcus Heng', 'Rachel Tan', 'Irfan Rosli', 'Ethan Wong', 'Siti Zulaikha',
+                'Nicholas Chia', 'Ananya Roy', 'Jonathan Lee', 'Vanessa Lim', 'Daniel Seow', 'Aisha Binte Ali'
+            ];
+
+            seniorNames.forEach((name, i) => {
+                const id = `gen_senior_${i}`;
+                const loc = sgTowns[i % sgTowns.length];
+                extraPool[id] = {
+                    id: id, name: name, age: 65 + (i * 2 % 20), role: 'Senior Member', location: loc.town, zone: loc.zone,
+                    avatar: presetAvatars[i % presetAvatars.length],
+                    teaches: ['Peranakan Ayam Buah Keluak', 'Hokkien Proverbs', 'Traditional Tailoring', 'Congkak Strategy', 'Herbal Tea Recipes'][i % 5],
+                    wantsToLearn: ['Singpass Facial Recognition', 'CDC Vouchers 2026', 'Scam Shield', 'YouTube Music', 'WhatsApp Calling'][i % 5],
+                    hoursTaught: 12 + i, hoursLearned: 10 + i, badgesCount: 4, kampungScore: 94,
+                    bio: `Active neighborhood member in ${loc.town} excited to exchange local wisdom for digital independence.`,
+                    category: ['cooking', 'culture', 'lifestyle'][i % 3], skillsLearned: [], skillsShared: []
+                };
+            });
+
+            youthNames.forEach((name, i) => {
+                const id = `gen_youth_${i}`;
+                const loc = sgTowns[(i + 3) % sgTowns.length];
+                extraPool[id] = {
+                    id: id, name: name, age: 18 + (i % 8), role: 'Youth Volunteer', location: loc.town, zone: loc.zone,
+                    avatar: presetAvatars[(i + 4) % presetAvatars.length],
+                    teaches: ['Singpass & CDC Voucher Guide', 'TikTok Video Editing', 'PayNow Security', 'Canva Poster Design', 'AI Prompts'][i % 5],
+                    wantsToLearn: ['Authentic Sambal Prep', 'Nyonya Kueh Rempah', 'Hokkien Stories', 'Traditional Gardening', 'Bonsai Pruning'][i % 5],
+                    hoursTaught: 15 + i, hoursLearned: 8 + i, badgesCount: 5, kampungScore: 96,
+                    bio: `Volunteer bridging digital gaps in ${loc.town} while learning traditional Singapore heritage skills.`,
+                    category: ['digital', 'media', 'scam'][i % 3], skillsLearned: [], skillsShared: []
+                };
+            });
+
+            return extraPool;
+        }
+
+        let currentUserId = 'beelan';
+        let displayedCount = 12;
+
+        let upcomingSessions = [
+            { id: 1, partnerId: 'ryan', topic: 'Singpass Face Verification & Nyonya Kueh Rempah', mode: 'BridgeGenerations Video Call', date: 'Oct 18, 2026 • 2:00 PM', status: 'Confirmed' },
+            { id: 2, partnerId: 'kevyn', topic: 'CDC Vouchers 2026 & Hokkien Storytelling', mode: 'Toa Payoh West CC', date: 'Oct 22, 2026 • 10:30 AM', status: 'Confirmed' }
+        ];
+
+        let pastSessions = [
+            { id: 101, partnerId: 'ryan', topic: 'PayNow QR Code Scam Protection', mode: 'Video Call', date: 'Oct 02, 2026' }
+        ];
+
+        function initUserSelector() {
+            const selector = document.getElementById('userSelector');
+            selector.innerHTML = '';
+
+            Object.keys(usersDatabase).forEach(key => {
+                const user = usersDatabase[key];
+                const opt = document.createElement('option');
+                opt.value = user.id;
+                opt.className = 'text-slate-900';
+                opt.innerText = `${user.name} (${user.role}, ${user.age} • ${user.location.split('(')[0].trim()})`;
+                if (key === currentUserId) opt.selected = true;
+                selector.appendChild(opt);
+            });
+
+            // Also populate avatar picker in Modal
+            const picker = document.getElementById('avatarPickerGrid');
+            picker.innerHTML = '';
+            presetAvatars.forEach((url, idx) => {
+                const label = document.createElement('label');
+                label.className = "cursor-pointer relative";
+                label.innerHTML = `
+                    <input type="radio" name="avatarSelect" value="${url}" ${idx === 0 ? 'checked' : ''} class="peer sr-only">
+                    <img src="${url}" class="w-12 h-12 rounded-full object-cover ring-2 ring-slate-200 peer-checked:ring-4 peer-checked:ring-sgred-600 transition">
+                `;
+                picker.appendChild(label);
+            });
+        }
+
+        function switchUser(userId) {
+            currentUserId = userId;
+            const user = usersDatabase[userId];
+
+            // Update Header Display
+            document.getElementById('headerUserName').innerText = user.name;
+            document.getElementById('headerUserAvatar').src = user.avatar;
+            document.getElementById('headerUserRole').innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> ${user.role}`;
+
+            // Update Portfolio Page
+            document.getElementById('portfolioName').innerText = user.name;
+            document.getElementById('portfolioLocation').innerText = `${user.location} • ${user.role}`;
+            document.getElementById('portfolioBio').innerText = user.bio || 'Active Singapore intergenerational exchange member.';
+            document.getElementById('portfolioAvatar').src = user.avatar;
+
+            document.getElementById('statHoursTaught').innerText = `${user.hoursTaught} hrs`;
+            document.getElementById('statHoursLearned').innerText = `${user.hoursLearned} hrs`;
+            document.getElementById('statBadges').innerText = user.badgesCount;
+            document.getElementById('statKampungScore').innerText = `${user.kampungScore} pts`;
+
+            renderPartnersGrid();
+            renderPortfolioLists();
+            renderSessions();
+            populateBookingPartnerSelect();
+        }
+
+        function calculateMatchScore(userA, userB) {
+            // Calculates overlap between userA wantsToLearn & userB teaches, and vice versa
+            let score = 70; // Baseline
+            const aWants = userA.wantsToLearn.toLowerCase();
+            const bTeaches = userB.teaches.toLowerCase();
+            const aTeaches = userA.teaches.toLowerCase();
+            const bWants = userB.wantsToLearn.toLowerCase();
+
+            // Keyword match boosts
+            if (aWants.split(',').some(k => bTeaches.includes(k.trim()))) score += 15;
+            if (bWants.split(',').some(k => aTeaches.includes(k.trim()))) score += 10;
+            if (userA.zone && userB.zone && userA.zone === userB.zone) score += 4; // Geographic boost
+
+            return Math.min(99, score);
+        }
+
+        function renderPartnersGrid() {
+            const grid = document.getElementById('partnersGrid');
+            grid.innerHTML = '';
+
+            const currentUser = usersDatabase[currentUserId];
+            const partnerKeys = Object.keys(usersDatabase).filter(key => key !== currentUserId);
+
+            let visibleCount = 0;
+
+            partnerKeys.slice(0, displayedCount).forEach(key => {
+                const partner = usersDatabase[key];
+                const matchScore = calculateMatchScore(currentUser, partner);
+
+                const card = document.createElement('div');
+                card.className = "partner-card bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition space-y-4 flex flex-col justify-between relative border-t-4 border-t-sgnavy-700";
+                card.setAttribute('data-category', partner.category || 'digital');
+                card.setAttribute('data-zone', partner.zone || 'Central');
+                card.setAttribute('data-keywords', `${partner.name} ${partner.teaches} ${partner.wantsToLearn} ${partner.location}`.toLowerCase());
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-start justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center space-x-3">
+                                <img src="${partner.avatar}" class="w-12 h-12 rounded-full object-cover ring-2 ring-sgnavy-700">
+                                <div>
+                                    <h3 class="font-extrabold text-sgnavy-700 text-base">${partner.name}</h3>
+                                    <p class="text-xs text-slate-500 font-medium">${partner.role} • ${partner.age} yrs</p>
+                                    <p class="text-[11px] text-sgred-600 font-bold"><i class="fa-solid fa-location-dot mr-1"></i>${partner.location}</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded border border-emerald-200 shadow-sm">
+                                <i class="fa-solid fa-bolt text-amber-500 mr-1"></i>${matchScore}% Match
+                            </span>
+                        </div>
+
+                        <!-- Teaches / Learns Pills -->
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-amber-50/90 p-2.5 rounded-lg border border-amber-200/80">
+                                <span class="text-[10px] font-black text-amber-900 uppercase block mb-0.5">Teaches / Shares:</span>
+                                <p class="font-bold text-slate-800">${partner.teaches}</p>
+                            </div>
+                            <div class="bg-sky-50/90 p-2.5 rounded-lg border border-sky-200/80">
+                                <span class="text-[10px] font-black text-sky-900 uppercase block mb-0.5">Wants to Learn:</span>
+                                <p class="font-bold text-slate-800">${partner.wantsToLearn}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
+                        <button onclick="startExchangeCallModal('${partner.id}')" class="flex-1 py-2 bg-sgred-600 hover:bg-sgred-700 text-white font-bold text-xs rounded-lg transition shadow flex items-center justify-center space-x-1">
+                            <i class="fa-solid fa-video text-xs"></i>
+                            <span>Call Now</span>
+                        </button>
+                        <button onclick="openBookingModalFor('${partner.id}')" class="flex-1 py-2 bg-sgnavy-700 hover:bg-sgnavy-800 text-white font-bold text-xs rounded-lg transition shadow flex items-center justify-center space-x-1">
+                            <i class="fa-regular fa-calendar-plus text-xs"></i>
+                            <span>Book Session</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+                visibleCount++;
+            });
+
+            document.getElementById('partnerCountBadge').innerText = `${partnerKeys.length} Registered Members`;
+
+            const loadMoreBtn = document.getElementById('loadMoreContainer');
+            if (displayedCount < partnerKeys.length) {
+                loadMoreBtn.classList.remove('hidden');
+            } else {
+                loadMoreBtn.classList.add('hidden');
+            }
+        }
+
+        function loadMorePartners() {
+            displayedCount += 12;
+            renderPartnersGrid();
+            filterCards();
+        }
+
+        function filterCards() {
+            const query = document.getElementById('skillSearchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const zone = document.getElementById('townFilter').value;
+            const cards = document.querySelectorAll('.partner-card');
+
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords');
+                const cardCat = card.getAttribute('data-category');
+                const cardZone = card.getAttribute('data-zone');
+
+                const matchesQuery = keywords.includes(query);
+                const matchesCategory = (category === 'all' || cardCat === category);
+                const matchesZone = (zone === 'all' || cardZone === zone);
+
+                if (matchesQuery && matchesCategory && matchesZone) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function runAiMatchmaker() {
+            const highlightBox = document.getElementById('aiMatchHighlightBox');
+            const highlightText = document.getElementById('aiMatchHighlightText');
+            
+            highlightBox.classList.remove('hidden');
+            highlightText.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-1"></i> Analyzing mutual skills across all 50 Singapore neighborhood profiles...`;
+
+            setTimeout(() => {
+                const user = usersDatabase[currentUserId];
+                // Find top matching profile
+                const partnerKeys = Object.keys(usersDatabase).filter(k => k !== currentUserId);
+                let topPartner = usersDatabase[partnerKeys[0]];
+                let topScore = 0;
+
+                partnerKeys.forEach(k => {
+                    const score = calculateMatchScore(user, usersDatabase[k]);
+                    if (score > topScore) {
+                        topScore = score;
+                        topPartner = usersDatabase[k];
+                    }
+                });
+
+                document.getElementById('aiMatchPercent').innerText = `${topScore}% Compatibility Score`;
+                highlightText.innerHTML = `<strong>BridgeAI Top Match Result:</strong> High synergy exchange recommendation with <strong>${topPartner.name} (${topPartner.role}, ${topPartner.location})</strong>! Ideal match to exchange <em>"${topPartner.teaches}"</em> for <em>"${user.teaches}"</em>.`;
+            }, 800);
+        }
+
+        function openCreateProfileModal() {
+            document.getElementById('createProfileModal').classList.remove('hidden');
+        }
+
+        function closeCreateProfileModal() {
+            document.getElementById('createProfileModal').classList.add('hidden');
+        }
+
+        function saveCustomProfile(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('newUserName').value.trim();
+            const age = parseInt(document.getElementById('newUserAge').value);
+            const role = document.getElementById('newUserRole').value;
+            const locString = document.getElementById('newUserLocation').value;
+            const category = document.getElementById('newUserCategory').value;
+            const teaches = document.getElementById('newUserTeaches').value.trim();
+            const wantsToLearn = document.getElementById('newUserWantsToLearn').value.trim();
+            const bio = document.getElementById('newUserBio').value.trim();
+
+            const avatarRadio = document.querySelector('input[name="avatarSelect"]:checked');
+            const avatarUrl = avatarRadio ? avatarRadio.value : presetAvatars[0];
+
+            // Extract Zone from Location string
+            let zone = 'Central';
+            if (locString.includes('East')) zone = 'East';
+            if (locString.includes('West')) zone = 'West';
+            if (locString.includes('North-East')) zone = 'North-East';
+            else if (locString.includes('North')) zone = 'North';
+
+            const newId = 'custom_user_' + Date.now();
+
+            usersDatabase[newId] = {
+                id: newId,
+                name: name,
+                age: age,
+                role: role,
+                location: locString,
+                zone: zone,
+                avatar: avatarUrl,
+                teaches: teaches,
+                wantsToLearn: wantsToLearn,
+                hoursTaught: 0,
+                hoursLearned: 0,
+                badgesCount: 1,
+                kampungScore: 100,
+                bio: bio || 'Excited to be part of Singapore intergenerational skill exchange network!',
+                category: category,
+                skillsLearned: [],
+                skillsShared: []
+            };
+
+            initUserSelector();
+            switchUser(newId);
+            closeCreateProfileModal();
+
+            alertCustom("Profile Created!", `Welcome to BridgeGenerations SG, ${name}! Your profile is now active.`);
+        }
+
+        function renderPortfolioLists() {
+            const user = usersDatabase[currentUserId];
+            
+            const learnedContainer = document.getElementById('skillsLearnedList');
+            learnedContainer.innerHTML = '';
+            
+            if (user.skillsLearned && user.skillsLearned.length > 0) {
+                user.skillsLearned.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = "p-3 bg-emerald-50/60 rounded-lg border border-emerald-200 flex justify-between items-center text-xs";
+                    div.innerHTML = `
+                        <div>
+                            <div class="flex items-center space-x-1.5">
+                                <span class="px-1.5 py-0.2 text-[9px] font-extrabold bg-emerald-700 text-white rounded">${item.badge}</span>
+                                <h4 class="font-bold text-slate-900">${item.title}</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-600 mt-1">Guided by: ${item.mentor} • ${item.date}</p>
+                        </div>
+                        <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+                    `;
+                    learnedContainer.appendChild(div);
+                });
+            } else {
+                learnedContainer.innerHTML = `<p class="text-xs text-slate-500 italic p-3">No completed learning modules yet. Schedule an exchange call to earn your first digital skill badge!</p>`;
+            }
+
+            const sharedContainer = document.getElementById('skillsSharedList');
+            sharedContainer.innerHTML = '';
+
+            if (user.skillsShared && user.skillsShared.length > 0) {
+                user.skillsShared.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = "p-3 bg-amber-50/60 rounded-lg border border-amber-200 flex justify-between items-center text-xs";
+                    div.innerHTML = `
+                        <div>
+                            <div class="flex items-center space-x-1.5">
+                                <span class="px-1.5 py-0.2 text-[9px] font-extrabold bg-amber-700 text-white rounded">${item.badge}</span>
+                                <h4 class="font-bold text-slate-900">${item.title}</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-600 mt-1">Learner: ${item.learner} • ${item.date}</p>
+                        </div>
+                        <i class="fa-solid fa-heart text-sgred-600 text-lg"></i>
+                    `;
+                    sharedContainer.appendChild(div);
+                });
+            } else {
+                sharedContainer.innerHTML = `<p class="text-xs text-slate-500 italic p-3">No completed teaching modules yet. Connect with a neighbor to share your heritage knowledge!</p>`;
+            }
+        }
+
+        function populateBookingPartnerSelect() {
+            const select = document.getElementById('bookingPartnerSelect');
+            select.innerHTML = '';
+            Object.keys(usersDatabase).filter(k => k !== currentUserId).forEach(k => {
+                const u = usersDatabase[k];
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.innerText = `${u.name} (${u.role} • ${u.location.split('(')[0]})`;
+                select.appendChild(opt);
+            });
+        }
+
+        function renderSessions() {
+            const list = document.getElementById('upcomingSessionsList');
+            list.innerHTML = '';
+
+            upcomingSessions.forEach(session => {
+                const partner = usersDatabase[session.partnerId] || usersDatabase['ryan'];
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3";
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <img src="${partner.avatar}" class="w-10 h-10 rounded-full object-cover ring-2 ring-sgnavy-700">
+                        <div>
+                            <h4 class="font-bold text-sgnavy-700 text-sm">${session.topic}</h4>
+                            <p class="text-xs text-slate-500 font-medium">${partner.name} • ${session.mode}</p>
+                            <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200 mt-1 inline-block">
+                                <i class="fa-regular fa-clock mr-1"></i>${session.date}
+                            </span>
+                        </div>
+                    </div>
+                    <button onclick="startExchangeCallModal('${partner.id}')" class="px-4 py-2 bg-sgred-600 hover:bg-sgred-700 text-white text-xs font-bold rounded-lg transition shadow self-end sm:self-auto">
+                        Join Call Now
+                    </button>
+                `;
+                list.appendChild(card);
+            });
+
+            const pastList = document.getElementById('pastSessionsList');
+            pastList.innerHTML = '';
+            pastSessions.forEach(session => {
+                const partner = usersDatabase[session.partnerId] || usersDatabase['ryan'];
+                const card = document.createElement('div');
+                card.className = "bg-white p-3 rounded-lg border border-slate-200 text-xs flex justify-between items-center";
+                card.innerHTML = `
+                    <div>
+                        <h5 class="font-bold text-slate-800">${session.topic}</h5>
+                        <p class="text-[11px] text-slate-500">With ${partner.name} • ${session.date}</p>
+                    </div>
+                    <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Completed</span>
+                `;
+                pastList.appendChild(card);
+            });
+        }
+
+        function startExchangeCallModal(partnerId) {
+            const partner = usersDatabase[partnerId];
+            const user = usersDatabase[currentUserId];
+
+            document.getElementById('callModalPartnerName').innerText = `Exchange Session with ${partner.name}`;
+            document.getElementById('callModalPartnerAvatar').src = partner.avatar;
+            document.getElementById('callModalPartnerTag').innerText = `${partner.name} (${partner.role})`;
+            document.getElementById('callModalUserAvatar').src = user.avatar;
+
+            document.getElementById('exchangeCallModal').classList.remove('hidden');
+        }
+
+        function closeExchangeModal() {
+            document.getElementById('exchangeCallModal').classList.add('hidden');
+        }
+
+        function toggleMic() {
+            const btn = document.getElementById('btnMic');
+            btn.classList.toggle('bg-sgred-600');
+        }
+
+        function toggleCam() {
+            const btn = document.getElementById('btnVideo');
+            btn.classList.toggle('bg-sgred-600');
+        }
+
+        async function generateGeminiLessonPlan() {
+            const box = document.getElementById('aiLessonContent');
+            box.innerHTML = `<p class="text-xs font-bold text-amber-900"><i class="fa-solid fa-spinner animate-spin mr-1.5"></i> BridgeAI generating customized lesson steps & icebreaker prompts...</p>`;
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const prompt = "Generate a concise 3-bullet point lesson plan and icebreaker for a Singapore intergenerational skill exchange session.";
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (text) {
+                    box.innerHTML = `<div class="prose prose-xs text-amber-950 font-medium">${text.replace(/\n/g, '<br>')}</div>`;
+                } else {
+                    throw new Error("Fallback");
+                }
+            } catch (err) {
+                box.innerHTML = `
+                    <p class="font-bold text-slate-800">BridgeAI Exchange Agenda:</p>
+                    <ul class="list-disc pl-5 space-y-1 text-slate-700">
+                        <li><strong>Icebreaker:</strong> Share your favorite hawker center dishes or neighborhood stories in Singapore!</li>
+                        <li><strong>Part 1 (Digital Exchange):</strong> Demonstrate smartphone/app setup step-by-step with patience.</li>
+                        <li><strong>Part 2 (Heritage Exchange):</strong> Discuss traditional recipes, spice preparation, or dialect proverbs.</li>
+                    </ul>
+                `;
+            }
+        }
+
+        function finishExchangeCall() {
+            closeExchangeModal();
+            const user = usersDatabase[currentUserId];
+            user.hoursLearned += 1;
+            user.hoursTaught += 1;
+            user.badgesCount += 1;
+
+            user.skillsLearned.unshift({ title: 'Intergenerational Skill Module', mentor: 'Community Mentor', date: 'Oct 2026', badge: 'Active Member' });
+
+            switchUser(currentUserId);
+            alertCustom("Exchange Session Completed!", "Congratulations! You have both earned a Digital Skill Badge added to your Singapore Community Portfolio.");
+        }
+
+        function openBookingModal() {
+            document.getElementById('bookingModal').classList.remove('hidden');
+        }
+
+        function openBookingModalFor(partnerId) {
+            document.getElementById('bookingPartnerSelect').value = partnerId;
+            openBookingModal();
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+        }
+
+        function confirmBooking() {
+            const partnerId = document.getElementById('bookingPartnerSelect').value;
+            const venue = document.getElementById('bookingVenueSelect').value;
+            const date = document.getElementById('bookingDate').value;
+            const partner = usersDatabase[partnerId];
+
+            upcomingSessions.unshift({
+                id: Date.now(),
+                partnerId: partnerId,
+                topic: `Skill Exchange: ${partner.teaches.split(',')[0]} & Digital Literacy`,
+                mode: venue,
+                date: `${date} • 2:00 PM`,
+                status: 'Confirmed'
+            });
+
+            closeBookingModal();
+            renderSessions();
+            switchTab('schedule');
+            alertCustom("Booking Confirmed!", `Your skill exchange with ${partner.name} at ${venue} has been scheduled.`);
+        }
+
+        function bookHubVenue(ccName) {
+            document.getElementById('bookingVenueSelect').value = ccName;
+            openBookingModal();
+        }
+
+        function generateCertificate() {
+            const user = usersDatabase[currentUserId];
+            document.getElementById('certUserName').innerText = user.name;
+            document.getElementById('certUserDetails').innerText = `${user.hoursTaught} Hours Heritage Shared • ${user.hoursLearned} Hours Digital Skills Mastered`;
+            document.getElementById('certificateModal').classList.remove('hidden');
+        }
+
+        function closeCertModal() {
+            document.getElementById('certificateModal').classList.add('hidden');
+        }
+
+        function triggerCopyCert() {
+            alertCustom("Link Copied!", "Your verified BridgeGenerations digital certificate link has been copied to your clipboard.");
+            closeCertModal();
+        }
+
+        function alertCustom(title, msg) {
+            const alertBox = document.createElement('div');
+            alertBox.className = "fixed bottom-5 right-5 bg-sgnavy-800 text-white p-4 rounded-xl shadow-2xl z-50 max-w-sm border-2 border-amber-400 space-y-1 animate-bounce";
+            alertBox.innerHTML = `
+                <h4 class="font-extrabold text-sm text-amber-400 flex items-center"><i class="fa-solid fa-circle-check mr-2"></i>${title}</h4>
+                <p class="text-xs text-slate-200 leading-relaxed">${msg}</p>
+            `;
+            document.body.appendChild(alertBox);
+            setTimeout(() => alertBox.remove(), 4000);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-sgnavy-800', 'text-white', 'border-b-2', 'border-amber-400');
+                btn.classList.add('text-sgnavy-100');
+            });
+
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) targetTab.classList.add('active');
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-sgnavy-800', 'text-white', 'border-b-2', 'border-amber-400');
+                activeBtn.classList.remove('text-sgnavy-100');
+            }
+        }
+
+        function setFontScale(scale) {
+            const body = document.getElementById('appBody');
+            body.classList.remove('font-scale-normal', 'font-scale-large', 'font-scale-xlarge');
+            body.classList.add(`font-scale-${scale}`);
+        }
+
+        window.onload = function() {
+            initUserSelector();
+            switchUser('beelan');
+        };
+    </script>
+</body>
+</html>
